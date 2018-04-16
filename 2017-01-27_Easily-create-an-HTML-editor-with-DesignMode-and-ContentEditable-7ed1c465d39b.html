@@ -1,0 +1,73 @@
+<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Easily create an HTML editor with DesignMode and ContentEditable</title><meta name="description" content="Have you ever wondered how hard it would be to recreate a text editor like the one we use right here on Medium?"><style>
+      * {
+        font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+      }
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        font-size: 50px;
+        margin-bottom: 17px;
+        color: #333;
+      }
+      h2 {
+        font-size: 24px;
+        line-height: 1.6;
+        margin: 30px 0 0 0;
+        margin-bottom: 18px;
+        margin-top: 33px;
+        color: #333;
+      }
+      h3 {
+        font-size: 30px;
+        margin: 10px 0 20px 0;
+        color: #333;
+      }
+      header {
+        width: 640px;
+        margin: auto;
+      }
+      section {
+        width: 640px;
+        margin: auto;
+      }
+      section p {
+        margin-bottom: 27px;
+        font-size: 20px;
+        line-height: 1.6;
+        color: #333;
+      }
+      section img {
+        max-width: 640px;
+      }
+      footer {
+        padding: 0 20px;
+        margin: 50px 0;
+        text-align: center;
+        font-size: 12px;
+      }
+      .aspectRatioPlaceholder {
+        max-width: auto !important;
+        max-height: auto !important;
+      }
+      .aspectRatioPlaceholder-fill {
+        padding-bottom: 0 !important;
+      }
+      header,
+      section[data-field=subtitle] {
+        display: none;
+      }
+      </style></head><body><article class="h-entry">
+<header>
+<h1 class="p-name">Easily create an HTML editor with DesignMode and ContentEditable</h1>
+</header>
+<section data-field="subtitle" class="p-summary">
+Have you ever wondered how hard it would be to recreate a text editor like the one we use right here on Medium?
+</section>
+<section data-field="body" class="e-content">
+<section name="a39b" class="section section--body section--first"><div class="section-divider"><hr class="section-divider"></div><div class="section-content"><div class="section-inner sectionLayout--insetColumn"><h3 name="34c3" id="34c3" class="graf graf--h3 graf--leading graf--title">Easily create an HTML editor with DesignMode and ContentEditable</h3><figure name="30fd" id="30fd" class="graf graf--figure graf--layoutOutsetLeft graf-after--h3"><div class="aspectRatioPlaceholder is-locked" style="max-width: 525px; max-height: 350px;"><div class="aspectRatioPlaceholder-fill" style="padding-bottom: 66.7%;"></div><img class="graf-image" data-image-id="1*g6f8jn5pcJNqgPAFOVnADw.jpeg" data-width="5184" data-height="3456" src="https://cdn-images-1.medium.com/max/600/1*g6f8jn5pcJNqgPAFOVnADw.jpeg"></div></figure><p name="bb66" id="bb66" class="graf graf--p graf-after--figure">Have you ever wondered how hard it would be to recreate a text editor like the one we use right here on Medium?</p><p name="2e2d" id="2e2d" class="graf graf--p graf-after--p">If you haven’t seen Medium’s text editor, I would highly recommend checking it out. You are able to write, edit, and style your content (within Medium’s provided styles) right here in your browser.</p><p name="7c84" id="7c84" class="graf graf--p graf-after--p">No tech knowledge is needed. No html tags appear in the text.</p><p name="a809" id="a809" class="graf graf--p graf-after--p">Would you believe me if I said you’d need nothing more than vanilla JavaScript, CSS, and HTML?</p><p name="b77f" id="b77f" class="graf graf--p graf-after--p">Take a look:</p><figure name="25a6" id="25a6" class="graf graf--figure graf--iframe graf-after--p"><iframe src="https://codepen.io/Iamjfu/embed/preview/oBYgWV?height=600&amp;amp;slug-hash=oBYgWV&amp;amp;default-tabs=html,result&amp;amp;host=http%3A%2F%2Fcodepen.io&amp;amp;embed-version=2" width="700" height="525" frameborder="0" scrolling="no"></iframe><figcaption class="imageCaption">An example of inline editable content with document.designMode</figcaption></figure><p name="89ad" id="89ad" class="graf graf--p graf-after--figure">Hopefully that example demonstrated a few things for you:</p><ol class="postList"><li name="df2d" id="df2d" class="graf graf--li graf-after--p">You have two options. <code class="markup--code markup--li-code">document.designMode</code> for the entire document, and <code class="markup--code markup--li-code">element.contentEditable</code> for just one element.</li><li name="9450" id="9450" class="graf graf--li graf-after--li">The browser gives us all the methods we need. Anything outside of <code class="markup--code markup--li-code">document.execCommand</code> is simply for demonstration purposes and error handling.</li><li name="f01a" id="f01a" class="graf graf--li graf-after--li">The commands modify the HTML by adding new tags around our content. This allows us to use CSS to style those tags. So simple.</li><li name="d4cd" id="d4cd" class="graf graf--li graf-after--li">The only “gotcha” is that you have to use <code class="markup--code markup--li-code">event.preventDefault();</code> if you trigger the command from a button click. Otherwise the focus will shift to the button and the command will fail.</li></ol><p name="4f97" id="4f97" class="graf graf--p graf-after--li">If nothing is selected, the command will fail <em class="markup--em markup--p-em">(sometimes)</em>.</p><p name="30fe" id="30fe" class="graf graf--p graf-after--p">If it serves your purposes better, you can also create editable content with HTML.</p><pre name="9819" id="9819" class="graf graf--pre graf-after--p"><code class="markup--code markup--pre-code">&lt;div contenteditable=&quot;true&quot;&gt;<br>  This text can be edited!<br>&lt;/div&gt;</code></pre><p name="4923" id="4923" class="graf graf--p graf-after--pre">This could work nicely with frameworks like React, Angular, etc. Where you could use a component’s state to control if the content is editable.</p><h3 name="3ece" id="3ece" class="graf graf--h3 graf-after--p">Using The Data</h3><p name="8732" id="8732" class="graf graf--p graf-after--h3">Now, we have to be careful what we do with this. You have a few options here: Take the entire edited content, strip out anything dangerous (like JavaScript) and render what you are given, or you can come up with a system of grabbing the changed data individually.</p><p name="7351" id="7351" class="graf graf--p graf-after--p">Either way you need to:</p><ol class="postList"><li name="f8ed" id="f8ed" class="graf graf--li graf-after--p">Get the new text when it changes.</li><li name="4c79" id="4c79" class="graf graf--li graf-after--li">Make sure the text is safe.</li><li name="d114" id="d114" class="graf graf--li graf-after--li">Render back your entire HTML.</li></ol><p name="18b1" id="18b1" class="graf graf--p graf-after--li">Below you will find the same example above, but this time when you change the text there will be some information logged to the console. I am using the <code class="markup--code markup--p-code">MutationObserver</code> API to watch for these changes.</p><figure name="bde3" id="bde3" class="graf graf--figure graf--iframe graf-after--p"><iframe src="https://codepen.io/Iamjfu/embed/preview/NdaemL?height=600&amp;amp;slug-hash=NdaemL&amp;amp;default-tabs=js,result&amp;amp;host=http%3A%2F%2Fcodepen.io&amp;amp;embed-version=2" width="700" height="525" frameborder="0" scrolling="no"></iframe></figure><p name="a3c6" id="a3c6" class="graf graf--p graf-after--figure">So what did I do?</p><ul class="postList"><li name="76cf" id="76cf" class="graf graf--li graf-after--p">I added an attribute to every element that I wanted to watch. You don’t have to do this, but it lets you hone in on specific editable items. If you do this, be careful not to turn on edit mode for tags you aren’t watching for changes.</li><li name="1a69" id="1a69" class="graf graf--li graf-after--li">I inspected the mutations to find out if they contained the attributes I was looking for. If they did, I sent that element’s attribute name and new content to the output (in this case, the console).</li></ul><p name="e205" id="e205" class="graf graf--p graf-after--li graf--trailing">I think that’s pretty simple. For your purposes, you can replace the console with a backend service that saves the changes. You’ll want to make sure no dangerous JavaScript has been added, so that it doesn’t open you up to <a href="https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29" data-href="https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)" class="markup--anchor markup--p-anchor" rel="noopener" target="_blank">XSS </a>attacks.</p></div></div></section><section name="5df8" class="section section--body section--last"><div class="section-divider"><hr class="section-divider"></div><div class="section-content"><div class="section-inner sectionLayout--insetColumn"><p name="12c0" id="12c0" class="graf graf--p graf--leading">Thanks for reading! Stay tuned for many other JavaScript API adventures.</p></div><div class="section-inner sectionLayout--outsetRow" data-paragraph-count="3"><figure name="9f38" id="9f38" class="graf graf--figure graf--layoutOutsetRow is-partialWidth graf-after--p" style="width: 33.333%;"><div class="aspectRatioPlaceholder is-locked"><div class="aspectRatioPlaceholder-fill" style="padding-bottom: 50.4%;"></div><a href="http://bit.ly/HackernoonFB" data-href="http://bit.ly/HackernoonFB" class="graf-imageAnchor" data-action="image-link" data-action-observe-only="true"><img class="graf-image" data-image-id="1*0hqOaABQ7XGPT-OYNgiUBg.png" data-width="1136" data-height="572" src="https://cdn-images-1.medium.com/max/400/1*0hqOaABQ7XGPT-OYNgiUBg.png"></a></div></figure><figure name="b494" id="b494" class="graf graf--figure graf--layoutOutsetRowContinue is-partialWidth graf-after--figure" style="width: 33.333%;"><div class="aspectRatioPlaceholder is-locked"><div class="aspectRatioPlaceholder-fill" style="padding-bottom: 50.4%;"></div><a href="https://goo.gl/k7XYbx" data-href="https://goo.gl/k7XYbx" class="graf-imageAnchor" data-action="image-link" data-action-observe-only="true"><img class="graf-image" data-image-id="1*Vgw1jkA6hgnvwzTsfMlnpg.png" data-width="1136" data-height="572" src="https://cdn-images-1.medium.com/max/400/1*Vgw1jkA6hgnvwzTsfMlnpg.png"></a></div></figure><figure name="d0ef" id="d0ef" class="graf graf--figure graf--layoutOutsetRowContinue is-partialWidth graf-after--figure" style="width: 33.333%;"><div class="aspectRatioPlaceholder is-locked"><div class="aspectRatioPlaceholder-fill" style="padding-bottom: 50.4%;"></div><a href="https://goo.gl/4ofytp" data-href="https://goo.gl/4ofytp" class="graf-imageAnchor" data-action="image-link" data-action-observe-only="true"><img class="graf-image" data-image-id="1*gKBpq1ruUi0FVK2UM_I4tQ.png" data-width="1136" data-height="572" src="https://cdn-images-1.medium.com/max/400/1*gKBpq1ruUi0FVK2UM_I4tQ.png"></a></div></figure></div><div class="section-inner sectionLayout--insetColumn"><blockquote name="f922" id="f922" class="graf graf--blockquote graf-after--figure"><a href="http://bit.ly/Hackernoon" data-href="http://bit.ly/Hackernoon" class="markup--anchor markup--blockquote-anchor" rel="noopener" target="_blank">Hacker Noon</a> is how hackers start their afternoons. We’re a part of the <a href="http://bit.ly/atAMIatAMI" data-href="http://bit.ly/atAMIatAMI" class="markup--anchor markup--blockquote-anchor" rel="nofollow noopener noopener" target="_blank">@AMI</a> family. We are now <a href="http://bit.ly/hackernoonsubmission" data-href="http://bit.ly/hackernoonsubmission" class="markup--anchor markup--blockquote-anchor" rel="nofollow noopener noopener" target="_blank">accepting submissions</a> and happy to <a href="mailto:partners@amipublications.com" data-href="mailto:partners@amipublications.com" class="markup--anchor markup--blockquote-anchor" target="_blank">discuss advertising &amp; sponsorship</a> opportunities.</blockquote><blockquote name="708a" id="708a" class="graf graf--blockquote graf-after--blockquote">If you enjoyed this story, we recommend reading our <a href="http://bit.ly/hackernoonlatestt" data-href="http://bit.ly/hackernoonlatestt" class="markup--anchor markup--blockquote-anchor" rel="nofollow noopener noopener" target="_blank">latest tech stories</a> and <a href="https://hackernoon.com/trending" data-href="https://hackernoon.com/trending" class="markup--anchor markup--blockquote-anchor" rel="nofollow noopener noopener" target="_blank">trending tech stories</a>. Until next time, don’t take the realities of the world for granted!</blockquote></div><div class="section-inner sectionLayout--fullWidth"><figure name="3936" id="3936" class="graf graf--figure graf--layoutFillWidth graf-after--blockquote graf--trailing"><div class="aspectRatioPlaceholder is-locked"><div class="aspectRatioPlaceholder-fill" style="padding-bottom: 12%;"></div><img class="graf-image" data-image-id="1*35tCjoPcvq6LbB3I6Wegqw.jpeg" data-width="15000" data-height="1800" src="https://cdn-images-1.medium.com/max/2000/1*35tCjoPcvq6LbB3I6Wegqw.jpeg"></div></figure></div></div></section>
+</section>
+<footer><p class="p-tags">Tagged in <a href="https://medium.com/tag/javascript" class="p-tag">JavaScript</a>, <a href="https://medium.com/tag/web-development" class="p-tag">Web Development</a>, <a href="https://medium.com/tag/programming" class="p-tag">Programming</a>, <a href="https://medium.com/tag/tech" class="p-tag">Tech</a>, <a href="https://medium.com/tag/technology" class="p-tag">Technology</a></p><p>By <a href="https://medium.com/@justindanielfuller" class="p-author h-card">Justin Fuller</a> on <a href="https://medium.com/p/7ed1c465d39b"><time class="dt-published" datetime="2017-01-27T02:23:18.261Z">January 27, 2017</time></a>.</p><p><a href="https://medium.com/@justindanielfuller/easily-create-an-html-editor-with-designmode-and-contenteditable-7ed1c465d39b" class="p-canonical">Canonical link</a></p><p>Exported from <a href="https://medium.com">Medium</a> on April 16, 2018.</p></footer></article>
+
+</body></html>
