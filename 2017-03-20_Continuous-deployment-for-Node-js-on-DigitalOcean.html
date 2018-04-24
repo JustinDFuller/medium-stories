@@ -1,73 +1,294 @@
-<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Continuous deployment for Node.js on DigitalOcean</title><meta name="description" content="Continuous Integration and Deployment have become important parts of the software development cycle. It’s important to spend your time…"><style>
-      * {
-        font-family: Georgia, Cambria, "Times New Roman", Times, serif;
-      }
-      html, body {
-        margin: 0;
-        padding: 0;
-      }
-      h1 {
-        font-size: 50px;
-        margin-bottom: 17px;
-        color: #333;
-      }
-      h2 {
-        font-size: 24px;
-        line-height: 1.6;
-        margin: 30px 0 0 0;
-        margin-bottom: 18px;
-        margin-top: 33px;
-        color: #333;
-      }
-      h3 {
-        font-size: 30px;
-        margin: 10px 0 20px 0;
-        color: #333;
-      }
-      header {
-        width: 640px;
-        margin: auto;
-      }
-      section {
-        width: 640px;
-        margin: auto;
-      }
-      section p {
-        margin-bottom: 27px;
-        font-size: 20px;
-        line-height: 1.6;
-        color: #333;
-      }
-      section img {
-        max-width: 640px;
-      }
-      footer {
-        padding: 0 20px;
-        margin: 50px 0;
-        text-align: center;
-        font-size: 12px;
-      }
-      .aspectRatioPlaceholder {
-        max-width: auto !important;
-        max-height: auto !important;
-      }
-      .aspectRatioPlaceholder-fill {
-        padding-bottom: 0 !important;
-      }
-      header,
-      section[data-field=subtitle] {
-        display: none;
-      }
-      </style></head><body><article class="h-entry">
-<header>
-<h1 class="p-name">Continuous deployment for Node.js on DigitalOcean</h1>
-</header>
-<section data-field="subtitle" class="p-summary">
-Continuous Integration and Deployment have become important parts of the software development cycle. It’s important to spend your time…
-</section>
-<section data-field="body" class="e-content">
-<section name="e292" class="section section--body section--first"><div class="section-divider"><hr class="section-divider"></div><div class="section-content"><div class="section-inner sectionLayout--insetColumn"><h3 name="1cb1" id="1cb1" class="graf graf--h3 graf--leading graf--title">Continuous deployment for Node.js on DigitalOcean</h3><p name="57bd" id="57bd" class="graf graf--p graf-after--h3">Continuous Integration and Deployment have become important parts of the software development cycle. It’s important to spend your time creating features, and you don’t want to worry about deploying your code. Plus, the more you are manually deploying code, the more likely you are to make an error. Today we will automate the process of running our tests and deploying our Node.js app to DigitalOcean.</p><figure name="0598" id="0598" class="graf graf--figure graf-after--p"><div class="aspectRatioPlaceholder is-locked" style="max-width: 700px; max-height: 294px;"><div class="aspectRatioPlaceholder-fill" style="padding-bottom: 42%;"></div><img class="graf-image" data-image-id="1*9fGCe-oMWWl4AygOmtMPSw.png" data-width="1093" data-height="459" src="https://cdn-images-1.medium.com/max/800/1*9fGCe-oMWWl4AygOmtMPSw.png"></div></figure><p name="68ee" id="68ee" class="graf graf--p graf-after--figure">By following this guide you should be set up with continuous integration and deployment of your Node.js app within just a few minutes. It makes a few assumptions: The first is that you are hosting your application on DigitalOcean and the second is that you have your repository stored on Github, Bitbucket, or Gitlab. It also assumes you have a pretty good grasp of Node.js, NPM, and the command line.</p><h3 name="50f6" id="50f6" class="graf graf--h3 graf-after--p">Feel free to skip around</h3><p name="33bd" id="33bd" class="graf graf--p graf-after--h3">Depending on if you are using a one click droplet or not you can probably skip a large portion of these instructions. Each section should alert you to exactly the steps contained in them, so if you know you’ve already completed a step then just skip over it.</p><h3 name="2abf" id="2abf" class="graf graf--h3 graf-after--p">Create NPM scripts</h3><p name="7861" id="7861" class="graf graf--p graf-after--h3">This process relies on at least 3 NPM scripts:</p><ul class="postList"><li name="2e41" id="2e41" class="graf graf--li graf-after--p"><strong class="markup--strong markup--li-strong">test</strong>: This will run your tests. I won’t try to tell you how to set up your tests, but this guide assumes you have them. They should be triggered by <code class="markup--code markup--li-code">npm test</code> or <code class="markup--code markup--li-code">yarn test</code>.</li><li name="16ff" id="16ff" class="graf graf--li graf-after--li"><strong class="markup--strong markup--li-strong">start</strong>: This starts your application. This actually needs to be set up in a specific way because we will rely on the module <a href="https://github.com/Unitech/pm2" data-href="https://github.com/Unitech/pm2" class="markup--anchor markup--li-anchor" rel="noopener" target="_blank">PM2</a> to start our server. <code class="markup--code markup--li-code">pm2 start index.js -i max — name=\”My-App\”</code> this starts the server with PM2, it starts it in cluster mode and will attempt to restart on failures.</li><li name="debf" id="debf" class="graf graf--li graf-after--li"><strong class="markup--strong markup--li-strong">restart</strong>: This will be needed to restart the server after updates are downloaded. This script does not gracefully restart but that option is available through PM2. However, you’ll need to handle that in your code. It should look like this <code class="markup--code markup--li-code">pm2 restart all</code>.</li></ul><p name="acd2" id="acd2" class="graf graf--p graf-after--li">Your <code class="markup--code markup--p-code">package.json</code> should now have this in it:</p><pre name="983e" id="983e" class="graf graf--pre graf-after--p">{<br>  &quot;dependencies&quot;: {<br>    &quot;pm2&quot;: &quot;^2.4.2&quot;<br>  },<br>  &quot;scripts&quot;: {<br>    &quot;start&quot;: &quot;<code class="markup--code markup--pre-code">pm2 start index.js -i max — name=\”My-App\”</code>&quot;,<br>    &quot;restart&quot;: &quot;pm2 restart all&quot;,<br>    &quot;test&quot;: &quot;your test script goes here&quot;<br>  }<br>}</pre><h3 name="c173" id="c173" class="graf graf--h3 graf-after--pre">Create a deploy user on DigitalOcean</h3><p name="1929" id="1929" class="graf graf--p graf-after--h3 graf--trailing">For this step I’m going to assume you either know how to create a droplet on DigitalOcean or you already have one. If you don’t then head over to their <a href="https://www.digitalocean.com/community/tags/node-js?type=tutorials" data-href="https://www.digitalocean.com/community/tags/node-js?type=tutorials" class="markup--anchor markup--p-anchor" rel="noopener" target="_blank">documentation</a> and come back when you’re ready.</p></div></div></section><section name="56a6" class="section section--body section--last"><div class="section-divider"><hr class="section-divider"></div><div class="section-content"><div class="section-inner sectionLayout--insetColumn"><p name="f88f" id="f88f" class="graf graf--p graf--leading">At this point you will want to create a user to use in deployment. For safety you will not want this user to have any root privileges. If you find that your specific use case needs root privileges I will include how to do that, but generally you will not want to give this user full access to your system.</p><ul class="postList"><li name="f29d" id="f29d" class="graf graf--li graf-after--p"><strong class="markup--strong markup--li-strong">Connect: </strong>Open up your terminal and log into your digitalocean droplet via the command: <code class="markup--code markup--li-code">ssh root@YOUR_SERVER_IP</code>. Replaced YOUR_SERVER_IP with the IP address of your DigitalOcean droplet. You can find that on “Access” page when you select your droplet. <em class="markup--em markup--li-em">If you haven’t added your SSH key to your droplet then scroll down to the bottom of this post to find out how to do that — or use DigitalOcean’s terminal.</em></li><li name="d693" id="d693" class="graf graf--li graf-after--li"><strong class="markup--strong markup--li-strong">Add user: </strong>You should now be logged into your droplet as the root user. To create the deploy user use the following command: <code class="markup--code markup--li-code">useradd -s /bin/bash -m -d /home/deploy -c “deploy” deploy</code>. This will create the deploy user with a folder in the home directory.</li><li name="2efd" id="2efd" class="graf graf--li graf-after--li"><strong class="markup--strong markup--li-strong">Password: </strong>Now you will need to create the password with <code class="markup--code markup--li-code">passwd deploy</code> where it will ask you to type in the password twice. I suggest you make the password different than the root user.</li><li name="934b" id="934b" class="graf graf--li graf-after--li"><strong class="markup--strong markup--li-strong">Only give sudo access if needed. </strong>Give <code class="markup--code markup--li-code">deploy</code> access to some root level commands with <code class="markup--code markup--li-code">usermod -aG sudo deploy</code>.</li></ul><h3 name="05a8" id="05a8" class="graf graf--h3 graf-after--li">Set up Node.js and NPM on the droplet</h3><ul class="postList"><li name="73bc" id="73bc" class="graf graf--li graf-after--h3">Run the following commands to get everything set up. This is where some of the sudo access is needed.</li></ul><pre name="e217" id="e217" class="graf graf--pre graf-after--li">curl -sL <a href="https://deb.nodesource.com/setup_7.x" data-href="https://deb.nodesource.com/setup_7.x" class="markup--anchor markup--pre-anchor" rel="nofollow noopener noopener" target="_blank">https://deb.nodesource.com/setup_7.x</a> | sudo bash -</pre><pre name="d3ad" id="d3ad" class="graf graf--pre graf-after--pre">sudo apt-get install nodejs</pre><p name="04e8" id="04e8" class="graf graf--p graf-after--pre">You should then be able to run <code class="markup--code markup--p-code">nodejs -v</code> and <code class="markup--code markup--p-code">npm -v</code> to see if it successfully installed. <em class="markup--em markup--p-em">This may be out of date, and 7.x could be old</em>. Please check to see what the latest version of Node is before you install.</p><h3 name="f6e8" id="f6e8" class="graf graf--h3 graf-after--p">Optional: Set up Yarn on the droplet</h3><p name="fd85" id="fd85" class="graf graf--p graf-after--h3">I use Yarn instead of NPM. If you use NPM then you can skip this step.</p><p name="65cb" id="65cb" class="graf graf--p graf-after--p">Yarn install instructions can be found on their website.</p><div name="8fca" id="8fca" class="graf graf--mixtapeEmbed graf-after--p"><a href="https://yarnpkg.com/en/docs/install#linux-tab" data-href="https://yarnpkg.com/en/docs/install#linux-tab" class="markup--anchor markup--mixtapeEmbed-anchor" title="https://yarnpkg.com/en/docs/install#linux-tab"><strong class="markup--strong markup--mixtapeEmbed-strong">Yarn</strong><br><em class="markup--em markup--mixtapeEmbed-em">Fast, reliable, and secure dependency management.</em>yarnpkg.com</a><a href="https://yarnpkg.com/en/docs/install#linux-tab" class="js-mixtapeImage mixtapeImage u-ignoreBlock" data-media-id="d786f77447a60feff65d26db2a346b9f" data-thumbnail-img-id="0*I0meB1Htlh5tjCyL." style="background-image: url(https://cdn-images-1.medium.com/fit/c/160/160/0*I0meB1Htlh5tjCyL.);"></a></div><p name="82db" id="82db" class="graf graf--p graf-after--mixtapeEmbed">To keep things brief here are the directions:</p><pre name="acf8" id="acf8" class="graf graf--pre graf-after--p"><code class="markup--code markup--pre-code">curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -</code></pre><pre name="1b02" id="1b02" class="graf graf--pre graf-after--pre"><code class="markup--code markup--pre-code">echo &quot;deb https://dl.yarnpkg.com/debian/ stable main&quot; | sudo tee /etc/apt/sources.list.d/yarn.list</code></pre><pre name="8a27" id="8a27" class="graf graf--pre graf-after--pre"><code class="markup--code markup--pre-code">sudo apt-get update &amp;&amp; sudo apt-get install yarn</code></pre><h3 name="d56b" id="d56b" class="graf graf--h3 graf-after--pre">Connect to Github via SSH</h3><p name="6a5a" id="6a5a" class="graf graf--p graf-after--h3">Connecting to github via SSH is a simple process and Github maintains great documentation about how to set it up. Check it out in the link below:</p><div name="8de3" id="8de3" class="graf graf--mixtapeEmbed graf-after--p"><a href="https://help.github.com/articles/connecting-to-github-with-ssh/" data-href="https://help.github.com/articles/connecting-to-github-with-ssh/" class="markup--anchor markup--mixtapeEmbed-anchor" title="https://help.github.com/articles/connecting-to-github-with-ssh/"><strong class="markup--strong markup--mixtapeEmbed-strong">Connecting to GitHub with SSH — User Documentation</strong><br><em class="markup--em markup--mixtapeEmbed-em">You can connect to GitHub using SSH. …</em>help.github.com</a><a href="https://help.github.com/articles/connecting-to-github-with-ssh/" class="js-mixtapeImage mixtapeImage mixtapeImage--empty u-ignoreBlock" data-media-id="f699cb0e90a7e94a345be31aba273ff2"></a></div><p name="c389" id="c389" class="graf graf--p graf-after--mixtapeEmbed">You will need to create an SSH key on your droplet and add it to Github by following those directions. This is necessary not just for the next step, but also because later we will use git to pull down the latest changes to the droplet after the CI passes. Specifically make sure your SSH key is connected to the <code class="markup--code markup--p-code">deploy</code> user that we created earlier.</p><h3 name="5145" id="5145" class="graf graf--h3 graf-after--p">Clone your repository</h3><p name="62b6" id="62b6" class="graf graf--p graf-after--h3">Now that you’re connected to Github you can clone your repo.</p><pre name="0f7f" id="0f7f" class="graf graf--pre graf-after--p">git clone <a href="mailto:git@github.com" data-href="mailto:git@github.com" class="markup--anchor markup--pre-anchor" rel="nofollow" target="_blank">git@github.com</a>:USERNAME/REPOSITORY.git</pre><p name="9c66" id="9c66" class="graf graf--p graf-after--pre">Replace USERNAME with your username and REPOSITORY with the repo you want to clone.</p><p name="5ca5" id="5ca5" class="graf graf--p graf-after--p">After this you should have your repository cloned onto your droplet. Run <code class="markup--code markup--p-code">cd REPOSITORY &amp;&amp; yarn &amp;&amp; yarn start</code> to install dependencies and begin running the server. Our build script will only restart the server, not start it. So you must explicitly start it now.</p><h3 name="6197" id="6197" class="graf graf--h3 graf-after--p">Set Up Codeship</h3><p name="36af" id="36af" class="graf graf--p graf-after--h3">Now that we have everything set up on the droplet we can begin setting up our Continuous Integration and Deployment. For this example I’ve chosen <a href="https://codeship.com/" data-href="https://codeship.com/" class="markup--anchor markup--p-anchor" rel="noopener" target="_blank">Codeship</a> because it’s free tier offers everything we need to accomplish this.</p><p name="1b2a" id="1b2a" class="graf graf--p graf-after--p"><strong class="markup--strong markup--p-strong">Here’s the order of operations:</strong></p><ol class="postList"><li name="d30f" id="d30f" class="graf graf--li graf-after--p">You push code to Github/Bitbucket/Gitlab.</li><li name="796d" id="796d" class="graf graf--li graf-after--li">Codeship runs your tests.</li><li name="e5d7" id="e5d7" class="graf graf--li graf-after--li">If your tests pass then Codeship runs a build script.</li><li name="249d" id="249d" class="graf graf--li graf-after--li">Your build script triggers your droplet to pull down the latest changes from Github.</li><li name="adf6" id="adf6" class="graf graf--li graf-after--li">Yarn installs any new dependencies.</li><li name="bc45" id="bc45" class="graf graf--li graf-after--li">PM2 restarts the Node.js application.</li></ol><p name="92cf" id="92cf" class="graf graf--p graf-after--li">Sound good? Ok, here’s what to do:</p><ol class="postList"><li name="96e4" id="96e4" class="graf graf--li graf-after--p">Create your Codeship account and log in. It should walk you through connecting to Github (or Bitbucket or Gitlab) and then selecting your repository. Since you’re an adult I’m going to let you handle this part!</li><li name="2c19" id="2c19" class="graf graf--li graf-after--li">You should now be at a screen where you need to configure your tests. The first section gives you setup commands, use these:</li></ol><pre name="d809" id="d809" class="graf graf--pre graf-after--li">nvm use 6<br>npm i -g yarn<br>yarn</pre><p name="d8f3" id="d8f3" class="graf graf--p graf-after--pre">3. Next you need to set up your test commands. This part is really complicated, but don’t worry, you can just paste in the following command:</p><pre name="0ce7" id="0ce7" class="graf graf--pre graf-after--p">yarn test</pre><p name="0ba3" id="0ba3" class="graf graf--p graf-after--pre">4. If you made it through that difficult step, go ahead and move on to setting up your deployment settings. Once you’re on that part you’ll see a bunch of options to select, like Amazon S3 and Heroku. We’re going to use a custom script, which is the very last option. That script should look like this:</p><pre name="bd92" id="bd92" class="graf graf--pre graf-after--p">ssh deploy@DROPLET_IP &#39;cd NAME_OF_YOUR_PROJECT/; git checkout master; git pull; yarn; yarn restart;&#39;</pre><p name="1b83" id="1b83" class="graf graf--p graf-after--pre">Take careful note of the single quotes around the second part of the script. Anything in those quotes will be ran inside the droplet. If the ssh connection fails those commands will not run.</p><h3 name="4958" id="4958" class="graf graf--h3 graf-after--p">Allow Codeship to connect to DigitalOcean via SSH</h3><p name="a821" id="a821" class="graf graf--p graf-after--h3">We’re almost done. But right now Codeship cannot connect to your droplet in that deploy script we just created.</p><p name="98d2" id="98d2" class="graf graf--p graf-after--p">Head over to your project settings and find “General” where you will find your “SSH public key”. This is the SSH key you need to add to your droplet. Read the following link to learn about how to add an SSH key.</p><div name="814e" id="814e" class="graf graf--mixtapeEmbed graf-after--p"><a href="https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-freebsd-server" data-href="https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-freebsd-server" class="markup--anchor markup--mixtapeEmbed-anchor" title="https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-freebsd-server"><strong class="markup--strong markup--mixtapeEmbed-strong">How To Configure SSH Key-Based Authentication on a FreeBSD Server | DigitalOcean</strong><br><em class="markup--em markup--mixtapeEmbed-em">SSH, or secure shell, is a network protocol that provides a secure, encrypted way to communicate with and administer…</em>www.digitalocean.com</a><a href="https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-freebsd-server" class="js-mixtapeImage mixtapeImage u-ignoreBlock" data-media-id="728422798847a50597dd835bbe04751b" data-thumbnail-img-id="0*O1XBg_Ox0JuQ8gXN." style="background-image: url(https://cdn-images-1.medium.com/fit/c/160/160/0*O1XBg_Ox0JuQ8gXN.);"></a></div><h3 name="4ce2" id="4ce2" class="graf graf--h3 graf-after--mixtapeEmbed">Test it out</h3><p name="d499" id="d499" class="graf graf--p graf-after--h3">That’s it! Once you push a new commit to your repo Codeship will run your tests and deploy your code!</p><h3 name="4ca3" id="4ca3" class="graf graf--h3 graf-after--p">Know a better way?</h3><p name="98bd" id="98bd" class="graf graf--p graf-after--h3">This was my first time setting up a continuous deployment and integration for Node.js and DigitalOcean. If you know of a better way please feel free to share it in the comments!</p></div><div class="section-inner sectionLayout--outsetRow" data-paragraph-count="3"><figure name="9f38" id="9f38" class="graf graf--figure graf--layoutOutsetRow is-partialWidth graf-after--p" style="width: 33.333%;"><div class="aspectRatioPlaceholder is-locked"><div class="aspectRatioPlaceholder-fill" style="padding-bottom: 50.4%;"></div><a href="http://bit.ly/HackernoonFB" data-href="http://bit.ly/HackernoonFB" class="graf-imageAnchor" data-action="image-link" data-action-observe-only="true"><img class="graf-image" data-image-id="1*0hqOaABQ7XGPT-OYNgiUBg.png" data-width="1136" data-height="572" src="https://cdn-images-1.medium.com/max/400/1*0hqOaABQ7XGPT-OYNgiUBg.png"></a></div></figure><figure name="b494" id="b494" class="graf graf--figure graf--layoutOutsetRowContinue is-partialWidth graf-after--figure" style="width: 33.333%;"><div class="aspectRatioPlaceholder is-locked"><div class="aspectRatioPlaceholder-fill" style="padding-bottom: 50.4%;"></div><a href="https://goo.gl/k7XYbx" data-href="https://goo.gl/k7XYbx" class="graf-imageAnchor" data-action="image-link" data-action-observe-only="true"><img class="graf-image" data-image-id="1*Vgw1jkA6hgnvwzTsfMlnpg.png" data-width="1136" data-height="572" src="https://cdn-images-1.medium.com/max/400/1*Vgw1jkA6hgnvwzTsfMlnpg.png"></a></div></figure><figure name="d0ef" id="d0ef" class="graf graf--figure graf--layoutOutsetRowContinue is-partialWidth graf-after--figure" style="width: 33.333%;"><div class="aspectRatioPlaceholder is-locked"><div class="aspectRatioPlaceholder-fill" style="padding-bottom: 50.4%;"></div><a href="https://goo.gl/4ofytp" data-href="https://goo.gl/4ofytp" class="graf-imageAnchor" data-action="image-link" data-action-observe-only="true"><img class="graf-image" data-image-id="1*gKBpq1ruUi0FVK2UM_I4tQ.png" data-width="1136" data-height="572" src="https://cdn-images-1.medium.com/max/400/1*gKBpq1ruUi0FVK2UM_I4tQ.png"></a></div></figure></div><div class="section-inner sectionLayout--insetColumn"><blockquote name="f922" id="f922" class="graf graf--blockquote graf-after--figure"><a href="http://bit.ly/Hackernoon" data-href="http://bit.ly/Hackernoon" class="markup--anchor markup--blockquote-anchor" rel="noopener" target="_blank">Hacker Noon</a> is how hackers start their afternoons. We’re a part of the <a href="http://bit.ly/atAMIatAMI" data-href="http://bit.ly/atAMIatAMI" class="markup--anchor markup--blockquote-anchor" rel="nofollow noopener noopener" target="_blank">@AMI</a> family. We are now <a href="http://bit.ly/hackernoonsubmission" data-href="http://bit.ly/hackernoonsubmission" class="markup--anchor markup--blockquote-anchor" rel="nofollow noopener noopener" target="_blank">accepting submissions</a> and happy to <a href="mailto:partners@amipublications.com" data-href="mailto:partners@amipublications.com" class="markup--anchor markup--blockquote-anchor" target="_blank">discuss advertising &amp; sponsorship</a> opportunities.</blockquote><blockquote name="708a" id="708a" class="graf graf--blockquote graf-after--blockquote">If you enjoyed this story, we recommend reading our <a href="http://bit.ly/hackernoonlatestt" data-href="http://bit.ly/hackernoonlatestt" class="markup--anchor markup--blockquote-anchor" rel="nofollow noopener noopener" target="_blank">latest tech stories</a> and <a href="https://hackernoon.com/trending" data-href="https://hackernoon.com/trending" class="markup--anchor markup--blockquote-anchor" rel="nofollow noopener noopener" target="_blank">trending tech stories</a>. Until next time, don’t take the realities of the world for granted!</blockquote></div><div class="section-inner sectionLayout--fullWidth"><figure name="3936" id="3936" class="graf graf--figure graf--layoutFillWidth graf-after--blockquote graf--trailing"><div class="aspectRatioPlaceholder is-locked"><div class="aspectRatioPlaceholder-fill" style="padding-bottom: 12%;"></div><img class="graf-image" data-image-id="1*35tCjoPcvq6LbB3I6Wegqw.jpeg" data-width="15000" data-height="1800" src="https://cdn-images-1.medium.com/max/2000/1*35tCjoPcvq6LbB3I6Wegqw.jpeg"></div></figure></div></div></section>
-</section>
-<footer><p class="p-tags">Tagged in <a href="https://medium.com/tag/nodejs" class="p-tag">Nodejs</a>, <a href="https://medium.com/tag/javascript" class="p-tag">JavaScript</a>, <a href="https://medium.com/tag/continuous-integration" class="p-tag">Continuous Integration</a>, <a href="https://medium.com/tag/programming" class="p-tag">Programming</a>, <a href="https://medium.com/tag/tech" class="p-tag">Tech</a></p><p>By <a href="https://medium.com/@justindanielfuller" class="p-author h-card">Justin Fuller</a> on <a href="https://medium.com/p/d800e8520ffe"><time class="dt-published" datetime="2017-03-20T12:32:00.660Z">March 20, 2017</time></a>.</p><p><a href="https://medium.com/@justindanielfuller/continuous-deployment-for-node-js-on-digitalocean-d800e8520ffe" class="p-canonical">Canonical link</a></p><p>Exported from <a href="https://medium.com">Medium</a> on April 16, 2018.</p></footer></article>
-
-</body></html>
+<article class="h-entry">
+  <header>
+    <h1 class="p-name">Continuous deployment for Node.js on DigitalOcean</h1>
+  </header>
+  <section data-field="subtitle" class="p-summary">
+    Continuous Integration and Deployment have become important parts of the software development cycle. It’s important to spend
+    your time…
+  </section>
+  <section data-field="body" class="e-content">
+    <section name="e292" class="section section--body section--first">
+      <div class="section-divider">
+        <hr class="section-divider">
+      </div>
+      <div class="section-content">
+        <div class="section-inner sectionLayout--insetColumn">
+          <h3 name="1cb1" id="1cb1" class="graf graf--h3 graf--leading graf--title">Continuous deployment for Node.js on DigitalOcean</h3>
+          <p name="57bd" id="57bd" class="graf graf--p graf-after--h3">Continuous Integration and Deployment have become important parts of the software development cycle. It’s important
+            to spend your time creating features, and you don’t want to worry about deploying your code. Plus, the more you
+            are manually deploying code, the more likely you are to make an error. Today we will automate the process of
+            running our tests and deploying our Node.js app to DigitalOcean.</p>
+          <figure name="0598" id="0598" class="graf graf--figure graf-after--p">
+            <div class="aspectRatioPlaceholder is-locked" style="max-width: 700px; max-height: 294px;">
+              <div class="aspectRatioPlaceholder-fill" style="padding-bottom: 42%;"></div>
+              <img class="graf-image" data-image-id="1*9fGCe-oMWWl4AygOmtMPSw.png" data-width="1093" data-height="459"
+                src="https://cdn-images-1.medium.com/max/800/1*9fGCe-oMWWl4AygOmtMPSw.png">
+            </div>
+          </figure>
+          <p name="68ee" id="68ee" class="graf graf--p graf-after--figure">By following this guide you should be set up with continuous integration and deployment of your Node.js app within
+            just a few minutes. It makes a few assumptions: The first is that you are hosting your application on DigitalOcean
+            and the second is that you have your repository stored on Github, Bitbucket, or Gitlab. It also assumes you have
+            a pretty good grasp of Node.js, NPM, and the command line.</p>
+          <h3 name="50f6" id="50f6" class="graf graf--h3 graf-after--p">Feel free to skip around</h3>
+          <p name="33bd" id="33bd" class="graf graf--p graf-after--h3">Depending on if you are using a one click droplet or not you can probably skip a large portion of these instructions.
+            Each section should alert you to exactly the steps contained in them, so if you know you’ve already completed
+            a step then just skip over it.</p>
+          <h3 name="2abf" id="2abf" class="graf graf--h3 graf-after--p">Create NPM scripts</h3>
+          <p name="7861" id="7861" class="graf graf--p graf-after--h3">This process relies on at least 3 NPM scripts:</p>
+          <ul class="postList">
+            <li name="2e41" id="2e41" class="graf graf--li graf-after--p">
+              <strong class="markup--strong markup--li-strong">test</strong>: This will run your tests. I won’t try to tell you how to set up your tests, but this guide assumes
+              you have them. They should be triggered by
+              <code class="markup--code markup--li-code">npm test</code> or
+              <code class="markup--code markup--li-code">yarn test</code>.</li>
+            <li name="16ff" id="16ff" class="graf graf--li graf-after--li">
+              <strong class="markup--strong markup--li-strong">start</strong>: This starts your application. This actually needs to be set up in a specific way because we
+              will rely on the module
+              <a href="https://github.com/Unitech/pm2" data-href="https://github.com/Unitech/pm2"
+                class="markup--anchor markup--li-anchor" rel="noopener" target="_blank">PM2</a> to start our server.
+              <code class="markup--code markup--li-code">pm2 start index.js -i max — name=\”My-App\”</code> this starts the server with PM2, it starts it in cluster
+              mode and will attempt to restart on failures.</li>
+            <li name="debf" id="debf" class="graf graf--li graf-after--li">
+              <strong class="markup--strong markup--li-strong">restart</strong>: This will be needed to restart the server after updates are downloaded. This script does
+              not gracefully restart but that option is available through PM2. However, you’ll need to handle that in your
+              code. It should look like this
+              <code class="markup--code markup--li-code">pm2 restart all</code>.</li>
+          </ul>
+          <p name="acd2" id="acd2" class="graf graf--p graf-after--li">Your
+            <code class="markup--code markup--p-code">package.json</code> should now have this in it:</p>
+          <pre name="983e" id="983e" class="graf graf--pre graf-after--p">{<br>  &quot;dependencies&quot;: {<br>    &quot;pm2&quot;: &quot;^2.4.2&quot;<br>  },<br>  &quot;scripts&quot;: {<br>    &quot;start&quot;: &quot;<code class="markup--code markup--pre-code">pm2 start index.js -i max — name=\”My-App\”</code>&quot;,<br>    &quot;restart&quot;: &quot;pm2 restart all&quot;,<br>    &quot;test&quot;: &quot;your test script goes here&quot;<br>  }<br>}</pre>
+          <h3 name="c173" id="c173" class="graf graf--h3 graf-after--pre">Create a deploy user on DigitalOcean</h3>
+          <p name="1929" id="1929" class="graf graf--p graf-after--h3 graf--trailing">For this step I’m going to assume you either know how to create a droplet on DigitalOcean or you already have one.
+            If you don’t then head over to their
+            <a href="https://www.digitalocean.com/community/tags/node-js?type=tutorials"
+              data-href="https://www.digitalocean.com/community/tags/node-js?type=tutorials" class="markup--anchor markup--p-anchor"
+              rel="noopener" target="_blank">documentation</a> and come back when you’re ready.</p>
+        </div>
+      </div>
+    </section>
+    <section name="56a6" class="section section--body section--last">
+      <div class="section-divider">
+        <hr class="section-divider">
+      </div>
+      <div class="section-content">
+        <div class="section-inner sectionLayout--insetColumn">
+          <p name="f88f" id="f88f" class="graf graf--p graf--leading">At this point you will want to create a user to use in deployment. For safety you will not want this user to have
+            any root privileges. If you find that your specific use case needs root privileges I will include how to do that,
+            but generally you will not want to give this user full access to your system.</p>
+          <ul class="postList">
+            <li name="f29d" id="f29d" class="graf graf--li graf-after--p">
+              <strong class="markup--strong markup--li-strong">Connect: </strong>Open up your terminal and log into your digitalocean droplet via the command:
+              <code class="markup--code markup--li-code">ssh root@YOUR_SERVER_IP</code>. Replaced YOUR_SERVER_IP with the IP address of your DigitalOcean droplet. You
+              can find that on “Access” page when you select your droplet.
+              <em class="markup--em markup--li-em">If you haven’t added your SSH key to your droplet then scroll down to the bottom of this post to find out how
+                to do that — or use DigitalOcean’s terminal.</em>
+            </li>
+            <li name="d693" id="d693" class="graf graf--li graf-after--li">
+              <strong class="markup--strong markup--li-strong">Add user: </strong>You should now be logged into your droplet as the root user. To create the deploy user use
+              the following command:
+              <code class="markup--code markup--li-code">useradd -s /bin/bash -m -d /home/deploy -c “deploy” deploy</code>. This will create the deploy user with a
+              folder in the home directory.</li>
+            <li name="2efd" id="2efd" class="graf graf--li graf-after--li">
+              <strong class="markup--strong markup--li-strong">Password: </strong>Now you will need to create the password with
+              <code class="markup--code markup--li-code">passwd deploy</code> where it will ask you to type in the password twice. I suggest you make the password different
+              than the root user.</li>
+            <li name="934b" id="934b" class="graf graf--li graf-after--li">
+              <strong class="markup--strong markup--li-strong">Only give sudo access if needed. </strong>Give
+              <code class="markup--code markup--li-code">deploy</code> access to some root level commands with
+              <code class="markup--code markup--li-code">usermod -aG sudo deploy</code>.</li>
+          </ul>
+          <h3 name="05a8" id="05a8" class="graf graf--h3 graf-after--li">Set up Node.js and NPM on the droplet</h3>
+          <ul class="postList">
+            <li name="73bc" id="73bc" class="graf graf--li graf-after--h3">Run the following commands to get everything set up. This is where some of the sudo access is needed.</li>
+          </ul>
+          <pre name="e217" id="e217" class="graf graf--pre graf-after--li">curl -sL <a href="https://deb.nodesource.com/setup_7.x" data-href="https://deb.nodesource.com/setup_7.x" class="markup--anchor markup--pre-anchor" rel="nofollow noopener noopener" target="_blank">https://deb.nodesource.com/setup_7.x</a> | sudo bash -</pre>
+          <pre name="d3ad" id="d3ad" class="graf graf--pre graf-after--pre">sudo apt-get install nodejs</pre>
+          <p name="04e8" id="04e8" class="graf graf--p graf-after--pre">You should then be able to run
+            <code class="markup--code markup--p-code">nodejs -v</code> and
+            <code class="markup--code markup--p-code">npm -v</code> to see if it successfully installed.
+            <em class="markup--em markup--p-em">This may be out of date, and 7.x could be old</em>. Please check to see what the latest version of Node is before
+            you install.</p>
+          <h3 name="f6e8" id="f6e8" class="graf graf--h3 graf-after--p">Optional: Set up Yarn on the droplet</h3>
+          <p name="fd85" id="fd85" class="graf graf--p graf-after--h3">I use Yarn instead of NPM. If you use NPM then you can skip this step.</p>
+          <p name="65cb" id="65cb" class="graf graf--p graf-after--p">Yarn install instructions can be found on their website.</p>
+          <div name="8fca" id="8fca" class="graf graf--mixtapeEmbed graf-after--p">
+            <a href="https://yarnpkg.com/en/docs/install#linux-tab" data-href="https://yarnpkg.com/en/docs/install#linux-tab"
+              class="markup--anchor markup--mixtapeEmbed-anchor" title="https://yarnpkg.com/en/docs/install#linux-tab">
+              <strong class="markup--strong markup--mixtapeEmbed-strong">Yarn</strong>
+              <br>
+              <em class="markup--em markup--mixtapeEmbed-em">Fast, reliable, and secure dependency management.</em>yarnpkg.com</a>
+            <a href="https://yarnpkg.com/en/docs/install#linux-tab"
+              class="js-mixtapeImage mixtapeImage u-ignoreBlock" data-media-id="d786f77447a60feff65d26db2a346b9f" data-thumbnail-img-id="0*I0meB1Htlh5tjCyL."
+              style="background-image: url(https://cdn-images-1.medium.com/fit/c/160/160/0*I0meB1Htlh5tjCyL.);"></a>
+          </div>
+          <p name="82db" id="82db" class="graf graf--p graf-after--mixtapeEmbed">To keep things brief here are the directions:</p>
+          <pre name="acf8" id="acf8" class="graf graf--pre graf-after--p"><code class="markup--code markup--pre-code">curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -</code></pre>
+          <pre name="1b02" id="1b02" class="graf graf--pre graf-after--pre"><code class="markup--code markup--pre-code">echo &quot;deb https://dl.yarnpkg.com/debian/ stable main&quot; | sudo tee /etc/apt/sources.list.d/yarn.list</code></pre>
+          <pre name="8a27" id="8a27" class="graf graf--pre graf-after--pre"><code class="markup--code markup--pre-code">sudo apt-get update &amp;&amp; sudo apt-get install yarn</code></pre>
+          <h3 name="d56b" id="d56b" class="graf graf--h3 graf-after--pre">Connect to Github via SSH</h3>
+          <p name="6a5a" id="6a5a" class="graf graf--p graf-after--h3">Connecting to github via SSH is a simple process and Github maintains great documentation about how to set it up.
+            Check it out in the link below:</p>
+          <div name="8de3" id="8de3" class="graf graf--mixtapeEmbed graf-after--p">
+            <a href="https://help.github.com/articles/connecting-to-github-with-ssh/" data-href="https://help.github.com/articles/connecting-to-github-with-ssh/"
+              class="markup--anchor markup--mixtapeEmbed-anchor" title="https://help.github.com/articles/connecting-to-github-with-ssh/">
+              <strong class="markup--strong markup--mixtapeEmbed-strong">Connecting to GitHub with SSH — User Documentation</strong>
+              <br>
+              <em class="markup--em markup--mixtapeEmbed-em">You can connect to GitHub using SSH. …</em>help.github.com</a>
+            <a href="https://help.github.com/articles/connecting-to-github-with-ssh/"
+              class="js-mixtapeImage mixtapeImage mixtapeImage--empty u-ignoreBlock" data-media-id="f699cb0e90a7e94a345be31aba273ff2"></a>
+          </div>
+          <p name="c389" id="c389" class="graf graf--p graf-after--mixtapeEmbed">You will need to create an SSH key on your droplet and add it to Github by following those directions. This is
+            necessary not just for the next step, but also because later we will use git to pull down the latest changes
+            to the droplet after the CI passes. Specifically make sure your SSH key is connected to the
+            <code class="markup--code markup--p-code">deploy</code> user that we created earlier.</p>
+          <h3 name="5145" id="5145" class="graf graf--h3 graf-after--p">Clone your repository</h3>
+          <p name="62b6" id="62b6" class="graf graf--p graf-after--h3">Now that you’re connected to Github you can clone your repo.</p>
+          <pre name="0f7f" id="0f7f" class="graf graf--pre graf-after--p">git clone <a href="mailto:git@github.com" data-href="mailto:git@github.com" class="markup--anchor markup--pre-anchor" rel="nofollow" target="_blank">git@github.com</a>:USERNAME/REPOSITORY.git</pre>
+          <p name="9c66" id="9c66" class="graf graf--p graf-after--pre">Replace USERNAME with your username and REPOSITORY with the repo you want to clone.</p>
+          <p name="5ca5" id="5ca5"
+            class="graf graf--p graf-after--p">After this you should have your repository cloned onto your droplet. Run
+            <code class="markup--code markup--p-code">cd REPOSITORY &amp;&amp; yarn &amp;&amp; yarn start</code> to install dependencies and begin running the server.
+            Our build script will only restart the server, not start it. So you must explicitly start it now.</p>
+          <h3 name="6197"
+            id="6197" class="graf graf--h3 graf-after--p">Set Up Codeship</h3>
+          <p name="36af" id="36af" class="graf graf--p graf-after--h3">Now that we have everything set up on the droplet we can begin setting up our Continuous Integration and Deployment.
+            For this example I’ve chosen
+            <a href="https://codeship.com/" data-href="https://codeship.com/" class="markup--anchor markup--p-anchor"
+              rel="noopener" target="_blank">Codeship</a> because it’s free tier offers everything we need to accomplish this.</p>
+          <p name="1b2a" id="1b2a"
+            class="graf graf--p graf-after--p">
+            <strong class="markup--strong markup--p-strong">Here’s the order of operations:</strong>
+          </p>
+          <ol class="postList">
+            <li name="d30f" id="d30f" class="graf graf--li graf-after--p">You push code to Github/Bitbucket/Gitlab.</li>
+            <li name="796d" id="796d" class="graf graf--li graf-after--li">Codeship runs your tests.</li>
+            <li name="e5d7" id="e5d7" class="graf graf--li graf-after--li">If your tests pass then Codeship runs a build script.</li>
+            <li name="249d" id="249d" class="graf graf--li graf-after--li">Your build script triggers your droplet to pull down the latest changes from Github.</li>
+            <li name="adf6" id="adf6"
+              class="graf graf--li graf-after--li">Yarn installs any new dependencies.</li>
+            <li name="bc45" id="bc45" class="graf graf--li graf-after--li">PM2 restarts the Node.js application.</li>
+          </ol>
+          <p name="92cf" id="92cf" class="graf graf--p graf-after--li">Sound good? Ok, here’s what to do:</p>
+          <ol class="postList">
+            <li name="96e4" id="96e4" class="graf graf--li graf-after--p">Create your Codeship account and log in. It should walk you through connecting to Github (or Bitbucket or Gitlab)
+              and then selecting your repository. Since you’re an adult I’m going to let you handle this part!</li>
+            <li name="2c19"
+              id="2c19" class="graf graf--li graf-after--li">You should now be at a screen where you need to configure your tests. The first section gives you setup commands,
+              use these:</li>
+          </ol>
+          <pre name="d809" id="d809" class="graf graf--pre graf-after--li">nvm use 6<br>npm i -g yarn<br>yarn</pre>
+          <p name="d8f3" id="d8f3" class="graf graf--p graf-after--pre">3. Next you need to set up your test commands. This part is really complicated, but don’t worry, you can just paste
+            in the following command:</p>
+          <pre name="0ce7" id="0ce7" class="graf graf--pre graf-after--p">yarn test</pre>
+          <p name="0ba3" id="0ba3" class="graf graf--p graf-after--pre">4. If you made it through that difficult step, go ahead and move on to setting up your deployment settings. Once
+            you’re on that part you’ll see a bunch of options to select, like Amazon S3 and Heroku. We’re going to use a
+            custom script, which is the very last option. That script should look like this:</p>
+          <pre name="bd92" id="bd92"
+            class="graf graf--pre graf-after--p">ssh deploy@DROPLET_IP &#39;cd NAME_OF_YOUR_PROJECT/; git checkout master; git pull; yarn; yarn restart;&#39;</pre>
+          <p name="1b83" id="1b83" class="graf graf--p graf-after--pre">Take careful note of the single quotes around the second part of the script. Anything in those quotes will be ran
+            inside the droplet. If the ssh connection fails those commands will not run.</p>
+          <h3 name="4958" id="4958" class="graf graf--h3 graf-after--p">Allow Codeship to connect to DigitalOcean via SSH</h3>
+          <p name="a821" id="a821" class="graf graf--p graf-after--h3">We’re almost done. But right now Codeship cannot connect to your droplet in that deploy script we just created.</p>
+          <p
+            name="98d2" id="98d2" class="graf graf--p graf-after--p">Head over to your project settings and find “General” where you will find your “SSH public key”. This is the SSH
+            key you need to add to your droplet. Read the following link to learn about how to add an SSH key.</p>
+            <div name="814e"
+              id="814e" class="graf graf--mixtapeEmbed graf-after--p">
+              <a href="https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-freebsd-server"
+                data-href="https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-freebsd-server"
+                class="markup--anchor markup--mixtapeEmbed-anchor" title="https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-freebsd-server">
+                <strong class="markup--strong markup--mixtapeEmbed-strong">How To Configure SSH Key-Based Authentication on a FreeBSD Server | DigitalOcean</strong>
+                <br>
+                <em class="markup--em markup--mixtapeEmbed-em">SSH, or secure shell, is a network protocol that provides a secure, encrypted way to communicate with and
+                  administer…</em>www.digitalocean.com</a>
+              <a href="https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-freebsd-server"
+                class="js-mixtapeImage mixtapeImage u-ignoreBlock" data-media-id="728422798847a50597dd835bbe04751b" data-thumbnail-img-id="0*O1XBg_Ox0JuQ8gXN."
+                style="background-image: url(https://cdn-images-1.medium.com/fit/c/160/160/0*O1XBg_Ox0JuQ8gXN.);"></a>
+            </div>
+            <h3 name="4ce2" id="4ce2" class="graf graf--h3 graf-after--mixtapeEmbed">Test it out</h3>
+            <p name="d499" id="d499" class="graf graf--p graf-after--h3">That’s it! Once you push a new commit to your repo Codeship will run your tests and deploy your code!</p>
+            <h3
+              name="4ca3" id="4ca3" class="graf graf--h3 graf-after--p">Know a better way?</h3>
+              <p name="98bd" id="98bd" class="graf graf--p graf-after--h3">This was my first time setting up a continuous deployment and integration for Node.js and DigitalOcean. If
+                you know of a better way please feel free to share it in the comments!</p>
+        </div>
+        <div class="section-inner sectionLayout--outsetRow" data-paragraph-count="3">
+          <figure name="9f38" id="9f38" class="graf graf--figure graf--layoutOutsetRow is-partialWidth graf-after--p" style="width: 33.333%;">
+            <div class="aspectRatioPlaceholder is-locked">
+              <div class="aspectRatioPlaceholder-fill" style="padding-bottom: 50.4%;"></div>
+              <a href="http://bit.ly/HackernoonFB" data-href="http://bit.ly/HackernoonFB" class="graf-imageAnchor"
+                data-action="image-link" data-action-observe-only="true">
+                <img class="graf-image" data-image-id="1*0hqOaABQ7XGPT-OYNgiUBg.png" data-width="1136" data-height="572" src="https://cdn-images-1.medium.com/max/400/1*0hqOaABQ7XGPT-OYNgiUBg.png">
+              </a>
+            </div>
+          </figure>
+          <figure name="b494" id="b494" class="graf graf--figure graf--layoutOutsetRowContinue is-partialWidth graf-after--figure"
+            style="width: 33.333%;">
+            <div class="aspectRatioPlaceholder is-locked">
+              <div class="aspectRatioPlaceholder-fill" style="padding-bottom: 50.4%;"></div>
+              <a href="https://goo.gl/k7XYbx" data-href="https://goo.gl/k7XYbx" class="graf-imageAnchor" data-action="image-link"
+                data-action-observe-only="true">
+                <img class="graf-image" data-image-id="1*Vgw1jkA6hgnvwzTsfMlnpg.png" data-width="1136" data-height="572" src="https://cdn-images-1.medium.com/max/400/1*Vgw1jkA6hgnvwzTsfMlnpg.png">
+              </a>
+            </div>
+          </figure>
+          <figure name="d0ef" id="d0ef" class="graf graf--figure graf--layoutOutsetRowContinue is-partialWidth graf-after--figure"
+            style="width: 33.333%;">
+            <div class="aspectRatioPlaceholder is-locked">
+              <div class="aspectRatioPlaceholder-fill" style="padding-bottom: 50.4%;"></div>
+              <a href="https://goo.gl/4ofytp" data-href="https://goo.gl/4ofytp" class="graf-imageAnchor" data-action="image-link"
+                data-action-observe-only="true">
+                <img class="graf-image" data-image-id="1*gKBpq1ruUi0FVK2UM_I4tQ.png" data-width="1136" data-height="572" src="https://cdn-images-1.medium.com/max/400/1*gKBpq1ruUi0FVK2UM_I4tQ.png">
+              </a>
+            </div>
+          </figure>
+        </div>
+        <div class="section-inner sectionLayout--insetColumn">
+          <blockquote name="f922" id="f922" class="graf graf--blockquote graf-after--figure">
+            <a href="http://bit.ly/Hackernoon" data-href="http://bit.ly/Hackernoon" class="markup--anchor markup--blockquote-anchor"
+              rel="noopener" target="_blank">Hacker Noon</a> is how hackers start their afternoons. We’re a part of the
+            <a href="http://bit.ly/atAMIatAMI"
+              data-href="http://bit.ly/atAMIatAMI" class="markup--anchor markup--blockquote-anchor" rel="nofollow noopener noopener"
+              target="_blank">@AMI</a> family. We are now
+            <a href="http://bit.ly/hackernoonsubmission" data-href="http://bit.ly/hackernoonsubmission"
+              class="markup--anchor markup--blockquote-anchor" rel="nofollow noopener noopener" target="_blank">accepting submissions</a> and happy to
+            <a href="mailto:partners@amipublications.com" data-href="mailto:partners@amipublications.com"
+              class="markup--anchor markup--blockquote-anchor" target="_blank">discuss advertising &amp; sponsorship</a> opportunities.</blockquote>
+          <blockquote name="708a" id="708a" class="graf graf--blockquote graf-after--blockquote">If you enjoyed this story, we recommend reading our
+            <a href="http://bit.ly/hackernoonlatestt" data-href="http://bit.ly/hackernoonlatestt"
+              class="markup--anchor markup--blockquote-anchor" rel="nofollow noopener noopener" target="_blank">latest tech stories</a> and
+            <a href="https://hackernoon.com/trending" data-href="https://hackernoon.com/trending"
+              class="markup--anchor markup--blockquote-anchor" rel="nofollow noopener noopener" target="_blank">trending tech stories</a>. Until next time, don’t take the realities of the world for granted!</blockquote>
+        </div>
+        <div class="section-inner sectionLayout--fullWidth">
+          <figure name="3936" id="3936" class="graf graf--figure graf--layoutFillWidth graf-after--blockquote graf--trailing">
+            <div class="aspectRatioPlaceholder is-locked">
+              <div class="aspectRatioPlaceholder-fill" style="padding-bottom: 12%;"></div>
+              <img class="graf-image" data-image-id="1*35tCjoPcvq6LbB3I6Wegqw.jpeg" data-width="15000" data-height="1800"
+                src="https://cdn-images-1.medium.com/max/2000/1*35tCjoPcvq6LbB3I6Wegqw.jpeg">
+            </div>
+          </figure>
+        </div>
+      </div>
+    </section>
+  </section>
+  <footer>
+    <p class="p-tags">Tagged in
+      <a href="https://medium.com/tag/nodejs" class="p-tag">Nodejs</a>,
+      <a href="https://medium.com/tag/javascript" class="p-tag">JavaScript</a>,
+      <a href="https://medium.com/tag/continuous-integration" class="p-tag">Continuous Integration</a>,
+      <a href="https://medium.com/tag/programming" class="p-tag">Programming</a>,
+      <a href="https://medium.com/tag/tech" class="p-tag">Tech</a>
+    </p>
+    <p>By
+      <a href="https://medium.com/@justindanielfuller" class="p-author h-card">Justin Fuller</a> on
+      <a href="https://medium.com/p/d800e8520ffe">
+        <time class="dt-published" datetime="2017-03-20T12:32:00.660Z">March 20, 2017</time>
+      </a>.</p>
+    <p>
+      <a href="https://medium.com/@justindanielfuller/continuous-deployment-for-node-js-on-digitalocean-d800e8520ffe" class="p-canonical">Canonical link</a>
+    </p>
+    <p>Exported from
+      <a href="https://medium.com">Medium</a> on April 16, 2018.</p>
+  </footer>
+</article>

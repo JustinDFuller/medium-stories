@@ -1,73 +1,205 @@
-<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Function Composition with Lodash</title><meta name="description" content="Have you been reading JavaScript posts lately? Maybe you’ve noticed that functional programming is really popular right now. It’s a really…"><style>
-      * {
-        font-family: Georgia, Cambria, "Times New Roman", Times, serif;
-      }
-      html, body {
-        margin: 0;
-        padding: 0;
-      }
-      h1 {
-        font-size: 50px;
-        margin-bottom: 17px;
-        color: #333;
-      }
-      h2 {
-        font-size: 24px;
-        line-height: 1.6;
-        margin: 30px 0 0 0;
-        margin-bottom: 18px;
-        margin-top: 33px;
-        color: #333;
-      }
-      h3 {
-        font-size: 30px;
-        margin: 10px 0 20px 0;
-        color: #333;
-      }
-      header {
-        width: 640px;
-        margin: auto;
-      }
-      section {
-        width: 640px;
-        margin: auto;
-      }
-      section p {
-        margin-bottom: 27px;
-        font-size: 20px;
-        line-height: 1.6;
-        color: #333;
-      }
-      section img {
-        max-width: 640px;
-      }
-      footer {
-        padding: 0 20px;
-        margin: 50px 0;
-        text-align: center;
-        font-size: 12px;
-      }
-      .aspectRatioPlaceholder {
-        max-width: auto !important;
-        max-height: auto !important;
-      }
-      .aspectRatioPlaceholder-fill {
-        padding-bottom: 0 !important;
-      }
-      header,
-      section[data-field=subtitle] {
-        display: none;
-      }
-      </style></head><body><article class="h-entry">
-<header>
-<h1 class="p-name">Function Composition with Lodash</h1>
-</header>
-<section data-field="subtitle" class="p-summary">
-Have you been reading JavaScript posts lately? Maybe you’ve noticed that functional programming is really popular right now. It’s a really…
-</section>
-<section data-field="body" class="e-content">
-<section name="2c4b" class="section section--body section--first"><div class="section-divider"><hr class="section-divider"></div><div class="section-content"><div class="section-inner sectionLayout--insetColumn"><h3 name="7972" id="7972" class="graf graf--h3 graf--leading graf--title">Function Composition with Lodash</h3><figure name="a5ad" id="a5ad" class="graf graf--figure graf-after--h3"><div class="aspectRatioPlaceholder is-locked" style="max-width: 90.5px; max-height: 90.5px;"><div class="aspectRatioPlaceholder-fill" style="padding-bottom: 100%;"></div><img class="graf-image" data-image-id="1*Lq3_o7t5g2y9bCYhedva0Q@2x.png" data-width="181" data-height="181" src="https://cdn-images-1.medium.com/max/800/1*Lq3_o7t5g2y9bCYhedva0Q@2x.png"></div></figure><p name="f510" id="f510" class="graf graf--p graf-after--figure">Have you been reading JavaScript posts lately? Maybe you’ve noticed that functional programming is really popular right now. It’s a really powerful way to program, but can be overwhelming to get started with. Thankfully the most popular NPM package (with 48 million downloads this month) has a very useful functional programming package to help us get started!</p><p name="058e" id="058e" class="graf graf--p graf-after--p">In this post we’ll look at how to use Lodash/fp to compose both our own functions, and the Lodash functions that you may already be using today!</p><p name="19af" id="19af" class="graf graf--p graf-after--p">Before we start coding — lets be sure that we know what we’re talking about!</p><h4 name="21c3" id="21c3" class="graf graf--h4 graf-after--p">Functional Programming:</h4><blockquote name="6a32" id="6a32" class="graf graf--blockquote graf-after--h4">A method of programming that focuses on using functions as first class variables. It avoids mutating (changing) data, and attempts to treat applications as a linear flow that pieces functions together to create a whole.</blockquote><h4 name="c30e" id="c30e" class="graf graf--h4 graf-after--blockquote">Function Composition:</h4><blockquote name="724b" id="724b" class="graf graf--blockquote graf-after--h4">Invoke functions that have been listed, in order, passing the result of each function to the next in the list, and then return the final function result as the result of the whole.</blockquote><p name="de81" id="de81" class="graf graf--p graf-after--blockquote">Normally when you compose functions you may do it like this (without knowing you are composing):</p><pre name="60a6" id="60a6" class="graf graf--pre graf-after--p">const myResult = myFunction(myOtherFunction(myData));</pre><p name="85cc" id="85cc" class="graf graf--p graf-after--pre">In that example you are giving <code class="markup--code markup--p-code">myFunction</code> the result of <code class="markup--code markup--p-code">myOtherFunction</code> as it’s only argument. Notice the functions would be called from right to left, or inside to outside. We do something similar with function composition.</p><pre name="c2ab" id="c2ab" class="graf graf--pre graf-after--p">const getMyResult = compose(<br>  myFunction,<br>  myOtherFunction,<br>);<br>const myResult = getMyResult(myData);</pre><p name="5f4c" id="5f4c" class="graf graf--p graf-after--pre">To make things clearer I want to define a few goals for our composed functions.</p><ul class="postList"><li name="77ab" id="77ab" class="graf graf--li graf-after--p">They will have a single input and output.</li><li name="5738" id="5738" class="graf graf--li graf-after--li">They will not have side-effects.</li><li name="fdba" id="fdba" class="graf graf--li graf-after--li graf--trailing">When chained together they can be used as a single “action” on a set of data.</li></ul></div></div></section><section name="d638" class="section section--body"><div class="section-divider"><hr class="section-divider"></div><div class="section-content"><div class="section-inner sectionLayout--insetColumn"><h4 name="8d20" id="8d20" class="graf graf--h4 graf--leading">Lodash/fp</h4><p name="fbe1" id="fbe1" class="graf graf--p graf-after--h4">To accomplish these goals we’ll be using a subset of the Lodash library called Lodash/fp. “Fp” for functional programming. This package is already installed when you have Lodash installed! The only difference is the functions are changed to be immutable, auto-curried, iteratee-first, and data-last.</p><p name="a74c" id="a74c" class="graf graf--p graf-after--p">What does that mean?</p><ul class="postList"><li name="f5fb" id="f5fb" class="graf graf--li graf-after--p"><strong class="markup--strong markup--li-strong">Immutable</strong>: the functions do not mutate any of their arguments.</li><li name="e82b" id="e82b" class="graf graf--li graf-after--li"><strong class="markup--strong markup--li-strong">Auto-Curried</strong>: Passing in less arguments than the function accepts will only return another function. That function expects the rest of the arguments.</li><li name="43a7" id="43a7" class="graf graf--li graf-after--li"><strong class="markup--strong markup--li-strong">Iteratee-first</strong>: Normally you pass in what you will do to your data as the last argument. Think of array functions. You pass in the callback last. In FP you pass it in first!</li><li name="b947" id="b947" class="graf graf--li graf-after--li"><strong class="markup--strong markup--li-strong">Data-last</strong>: The last thing the function expects is the data. Since it’s curried this allows you to define what the function will do, assign it to a variable, then later give it the data in a composed function (or on its own).</li><li name="8204" id="8204" class="graf graf--li graf-after--li"><strong class="markup--strong markup--li-strong">Arguments </strong>to callbacks/iteratees are capped (usually to just the first argument). This avoids side-effects for functions like <code class="markup--code markup--li-code">parseInt </code>that have optional extra arguments. Please note that this does not mean the functions themselves are capped to one argument.</li></ul><p name="68af" id="68af" class="graf graf--p graf-after--li graf--trailing">All this may seem confusing right now. So let’s look at a code example!</p></div></div></section><section name="c36a" class="section section--body"><div class="section-divider"><hr class="section-divider"></div><div class="section-content"><div class="section-inner sectionLayout--insetColumn"><h4 name="a081" id="a081" class="graf graf--h4 graf--leading">Problem:</h4><p name="743f" id="743f" class="graf graf--p graf-after--h4">You are building a web page that displays contact information to users. The business specified that contacts must be sorted by first name, filtered to remove any contacts without a phone number, it’s possible that contacts may have been added twice so only unique contact numbers should be shown, and the numbers must be formatted like <code class="markup--code markup--p-code">(xxx)xxx-xxxx</code>.</p><p name="31d0" id="31d0" class="graf graf--p graf-after--p">The contact object looks like this:</p><pre name="9a1d" id="9a1d" class="graf graf--pre graf-after--p">{<br>  firstName: &#39;justin&#39;,<br>  lastName: &#39;fuller&#39;,<br>  phone: &#39;1234568490&#39;<br>}</pre><h4 name="2cbc" id="2cbc" class="graf graf--h4 graf-after--pre">Imperative version:</h4><pre name="cafb" id="cafb" class="graf graf--pre graf-after--h4">import _ from &#39;lodash&#39;;<br>const data = [ /* data in here */ ];</pre><pre name="7c2d" id="7c2d" class="graf graf--pre graf-after--pre">const sorted = _.sortBy(data, &#39;firstName&#39;);</pre><pre name="ef23" id="ef23" class="graf graf--pre graf-after--pre">const filtered = _.filter(sorted, &#39;phone&#39;);</pre><pre name="2572" id="2572" class="graf graf--pre graf-after--pre">const unique = _.uniqBy(filtered, &#39;phone&#39;);</pre><pre name="586c" id="586c" class="graf graf--pre graf-after--pre">const formatPhone = c =&gt; ({<br>  ...c,<br>  phone: `(${c.phone.slice(0, 2)})${c.phone.slice(3, 5)-${c.phone.slice(6)}}`<br>});</pre><pre name="fda7" id="fda7" class="graf graf--pre graf-after--pre">const formatted = _.map(unique, formatPhone);</pre><pre name="5e35" id="5e35" class="graf graf--pre graf-after--pre">console.log(formatted);</pre><h4 name="c9f3" id="c9f3" class="graf graf--h4 graf-after--pre">Imperative version 2:</h4><pre name="00a2" id="00a2" class="graf graf--pre graf-after--h4">import _ from &#39;lodash&#39;;<br>const data = [ /* data here */ ];</pre><pre name="342d" id="342d" class="graf graf--pre graf-after--pre">const formatPhone = c =&gt; ({<br>  ...c,<br>  phone: `(${c.phone.slice(0, 2)})${c.phone.slice(3, 5)-${c.phone.slice(6)}}`<br>});</pre><pre name="714a" id="714a" class="graf graf--pre graf-after--pre">const formatted = _.map(<br>  _.uniqBy(<br>    _.filter(<br>      _.sortBy(data, &#39;firstName&#39;)<br>      &#39;phone&#39;,    <br>    ), <br>    &#39;phone&#39;,  <br>  ),<br>  formatPhone,<br>);</pre><pre name="e4e9" id="e4e9" class="graf graf--pre graf-after--pre">console.log(formatted);</pre><h4 name="636f" id="636f" class="graf graf--h4 graf-after--pre">Functional version:</h4><pre name="7f10" id="7f10" class="graf graf--pre graf-after--h4">import fp from ‘lodash/fp’;<br>const data = [ /* data here **/ ];</pre><pre name="68d7" id="68d7" class="graf graf--pre graf-after--pre">const formatPhone = c =&gt; ({<br>  ...c,<br>  phone: `(${c.phone.slice(0, 2)})${c.phone.slice(3, 5)-${c.phone.slice(6)}}`<br>});</pre><pre name="d875" id="d875" class="graf graf--pre graf-after--pre">const formatData = fp.compose(<br>  fp.map(formatPhone),<br>  fp.uniqBy(&#39;phone&#39;),<br>  fp.filter(&#39;phone&#39;),<br>  fp.sortBy(&#39;firstName&#39;),<br>);</pre><pre name="8dd6" id="8dd6" class="graf graf--pre graf-after--pre">console.log(formatData(data));</pre><p name="91ce" id="91ce" class="graf graf--p graf-after--pre">Those who prefer functional programming would tell you that the last version is more declarative. Instead of telling you <em class="markup--em markup--p-em">how</em> the function works, it tells you <em class="markup--em markup--p-em">what</em> it does!</p><p name="bcbf" id="bcbf" class="graf graf--p graf-after--p">So let’s walk through each step of the code to unwrap what it does.</p><ul class="postList"><li name="699f" id="699f" class="graf graf--li graf-after--p">fp.compose — a function that accepts any number of functions as arguments. It then calls them from right to left, just the same as functions are called when you pass them as an argument.</li><li name="4cdf" id="4cdf" class="graf graf--li graf-after--li">Fp. SortBy, uniqBy, filter, and map all accept the data last. So first we tell the functions what to sort, filter, and map by, then later it accepts the data and returns the result.</li><li name="37e0" id="37e0" class="graf graf--li graf-after--li graf--trailing">When we call formatData with data it takes the result of each function and passed it to the next function. The result of the last function is the result of the entire chain.</li></ul></div></div></section><section name="393a" class="section section--body"><div class="section-divider"><hr class="section-divider"></div><div class="section-content"><div class="section-inner sectionLayout--insetColumn"><p name="6e2c" id="6e2c" class="graf graf--p graf--leading">Now that we see the expressive power of functional programming with Lodash I want to explore some more problems. You’ll begin to see how easy it is, and hopefully you will see the safety that comes with this style of programming!</p><h4 name="dac2" id="dac2" class="graf graf--h4 graf-after--p">Application Composition</h4><p name="310b" id="310b" class="graf graf--p graf-after--h4">Composition is not limited to working with data. An entire app can be composed together through many smaller functions.</p><p name="1110" id="1110" class="graf graf--p graf-after--p">Let’s do a mental exercise: think through the steps of an application.</p><ul class="postList"><li name="bab8" id="bab8" class="graf graf--li graf-after--p">Retrieve any initial configuration (environment variables, command line arguments) and package then into a reusable object.</li><li name="c19d" id="c19d" class="graf graf--li graf-after--li">Import any third party dependencies.</li><li name="26f0" id="26f0" class="graf graf--li graf-after--li">Use the configuration and dependencies to bootstrap the app.</li><li name="35d1" id="35d1" class="graf graf--li graf-after--li">Instantiate routes, services, components , whatever it is the app does.</li></ul><p name="6489" id="6489" class="graf graf--p graf-after--li">Do you see how this example or any number of other examples could be strung together? Do you see the benefit that would come from eliminating side effects?</p><p name="a314" id="a314" class="graf graf--p graf-after--p">At this point you are hopefully wanting to dive in and begin using composition and Lodash/fp to solve problems, so below I wil include a link to the FP docs. Use this to find out how to use your favorite Lodash methods in a functional/composition style!</p><div name="571d" id="571d" class="graf graf--mixtapeEmbed graf-after--p graf--trailing"><a href="https://github.com/lodash/lodash/wiki/FP-Guide" data-href="https://github.com/lodash/lodash/wiki/FP-Guide" class="markup--anchor markup--mixtapeEmbed-anchor" title="https://github.com/lodash/lodash/wiki/FP-Guide"><strong class="markup--strong markup--mixtapeEmbed-strong">lodash/lodash</strong><br><em class="markup--em markup--mixtapeEmbed-em">lodash - A modern JavaScript utility library delivering modularity, performance, &amp; extras.</em>github.com</a><a href="https://github.com/lodash/lodash/wiki/FP-Guide" class="js-mixtapeImage mixtapeImage u-ignoreBlock" data-media-id="bf81c969787dde6a72973cb600074b09" data-thumbnail-img-id="0*yqpZfaudEeVmzSvC." style="background-image: url(https://cdn-images-1.medium.com/fit/c/160/160/0*yqpZfaudEeVmzSvC.);"></a></div></div></div></section><section name="452a" class="section section--body section--last"><div class="section-divider"><hr class="section-divider"></div><div class="section-content"><div class="section-inner sectionLayout--insetColumn"><p name="63ab" id="63ab" class="graf graf--p graf--leading graf--trailing">Thanks for reading! Stay tuned for more posts about Lodash and functional programming!</p></div></div></section>
-</section>
-<footer><p class="p-tags">Tagged in <a href="https://medium.com/tag/javascript" class="p-tag">JavaScript</a>, <a href="https://medium.com/tag/functional-programming" class="p-tag">Functional Programming</a>, <a href="https://medium.com/tag/front-end-development" class="p-tag">Front End Development</a>, <a href="https://medium.com/tag/software-development" class="p-tag">Software Development</a>, <a href="https://medium.com/tag/web-development" class="p-tag">Web Development</a></p><p>By <a href="https://medium.com/@justindanielfuller" class="p-author h-card">Justin Fuller</a> on <a href="https://medium.com/p/d30eb50153d1"><time class="dt-published" datetime="2017-11-09T11:08:35.945Z">November 9, 2017</time></a>.</p><p><a href="https://medium.com/@justindanielfuller/function-composition-with-lodash-d30eb50153d1" class="p-canonical">Canonical link</a></p><p>Exported from <a href="https://medium.com">Medium</a> on April 16, 2018.</p></footer></article>
-
-</body></html>
+<article class="h-entry">
+  <header>
+    <h1 class="p-name">Function Composition with Lodash</h1>
+  </header>
+  <section data-field="subtitle" class="p-summary">
+    Have you been reading JavaScript posts lately? Maybe you’ve noticed that functional programming is really popular right now.
+    It’s a really…
+  </section>
+  <section data-field="body" class="e-content">
+    <section name="2c4b" class="section section--body section--first">
+      <div class="section-divider">
+        <hr class="section-divider">
+      </div>
+      <div class="section-content">
+        <div class="section-inner sectionLayout--insetColumn">
+          <h3 name="7972" id="7972" class="graf graf--h3 graf--leading graf--title">Function Composition with Lodash</h3>
+          <figure name="a5ad" id="a5ad" class="graf graf--figure graf-after--h3">
+            <div class="aspectRatioPlaceholder is-locked" style="max-width: 90.5px; max-height: 90.5px;">
+              <div class="aspectRatioPlaceholder-fill" style="padding-bottom: 100%;"></div>
+              <img class="graf-image" data-image-id="1*Lq3_o7t5g2y9bCYhedva0Q@2x.png" data-width="181" data-height="181"
+                src="https://cdn-images-1.medium.com/max/800/1*Lq3_o7t5g2y9bCYhedva0Q@2x.png">
+            </div>
+          </figure>
+          <p name="f510" id="f510" class="graf graf--p graf-after--figure">Have you been reading JavaScript posts lately? Maybe you’ve noticed that functional programming is really popular
+            right now. It’s a really powerful way to program, but can be overwhelming to get started with. Thankfully the
+            most popular NPM package (with 48 million downloads this month) has a very useful functional programming package
+            to help us get started!</p>
+          <p name="058e" id="058e" class="graf graf--p graf-after--p">In this post we’ll look at how to use Lodash/fp to compose both our own functions, and the Lodash functions that
+            you may already be using today!</p>
+          <p name="19af" id="19af" class="graf graf--p graf-after--p">Before we start coding — lets be sure that we know what we’re talking about!</p>
+          <h4 name="21c3" id="21c3" class="graf graf--h4 graf-after--p">Functional Programming:</h4>
+          <blockquote name="6a32" id="6a32" class="graf graf--blockquote graf-after--h4">A method of programming that focuses on using functions as first class variables. It avoids mutating (changing)
+            data, and attempts to treat applications as a linear flow that pieces functions together to create a whole.</blockquote>
+          <h4
+            name="c30e" id="c30e" class="graf graf--h4 graf-after--blockquote">Function Composition:</h4>
+            <blockquote name="724b" id="724b" class="graf graf--blockquote graf-after--h4">Invoke functions that have been listed, in order, passing the result of each function to the next in the list,
+              and then return the final function result as the result of the whole.</blockquote>
+            <p name="de81" id="de81"
+              class="graf graf--p graf-after--blockquote">Normally when you compose functions you may do it like this (without knowing you are composing):</p>
+            <pre name="60a6"
+              id="60a6" class="graf graf--pre graf-after--p">const myResult = myFunction(myOtherFunction(myData));</pre>
+            <p name="85cc" id="85cc" class="graf graf--p graf-after--pre">In that example you are giving
+              <code class="markup--code markup--p-code">myFunction</code> the result of
+              <code class="markup--code markup--p-code">myOtherFunction</code> as it’s only argument. Notice the functions would be called from right to left, or inside
+              to outside. We do something similar with function composition.</p>
+            <pre name="c2ab" id="c2ab" class="graf graf--pre graf-after--p">const getMyResult = compose(<br>  myFunction,<br>  myOtherFunction,<br>);<br>const myResult = getMyResult(myData);</pre>
+            <p name="5f4c" id="5f4c" class="graf graf--p graf-after--pre">To make things clearer I want to define a few goals for our composed functions.</p>
+            <ul class="postList">
+              <li name="77ab" id="77ab" class="graf graf--li graf-after--p">They will have a single input and output.</li>
+              <li name="5738" id="5738" class="graf graf--li graf-after--li">They will not have side-effects.</li>
+              <li name="fdba" id="fdba" class="graf graf--li graf-after--li graf--trailing">When chained together they can be used as a single “action” on a set of data.</li>
+            </ul>
+        </div>
+      </div>
+    </section>
+    <section name="d638" class="section section--body">
+      <div class="section-divider">
+        <hr class="section-divider">
+      </div>
+      <div class="section-content">
+        <div class="section-inner sectionLayout--insetColumn">
+          <h4 name="8d20" id="8d20" class="graf graf--h4 graf--leading">Lodash/fp</h4>
+          <p name="fbe1" id="fbe1" class="graf graf--p graf-after--h4">To accomplish these goals we’ll be using a subset of the Lodash library called Lodash/fp. “Fp” for functional programming.
+            This package is already installed when you have Lodash installed! The only difference is the functions are changed
+            to be immutable, auto-curried, iteratee-first, and data-last.</p>
+          <p name="a74c" id="a74c" class="graf graf--p graf-after--p">What does that mean?</p>
+          <ul class="postList">
+            <li name="f5fb" id="f5fb" class="graf graf--li graf-after--p">
+              <strong class="markup--strong markup--li-strong">Immutable</strong>: the functions do not mutate any of their arguments.</li>
+            <li name="e82b" id="e82b" class="graf graf--li graf-after--li">
+              <strong class="markup--strong markup--li-strong">Auto-Curried</strong>: Passing in less arguments than the function accepts will only return another function.
+              That function expects the rest of the arguments.</li>
+            <li name="43a7" id="43a7" class="graf graf--li graf-after--li">
+              <strong class="markup--strong markup--li-strong">Iteratee-first</strong>: Normally you pass in what you will do to your data as the last argument. Think of
+              array functions. You pass in the callback last. In FP you pass it in first!</li>
+            <li name="b947" id="b947" class="graf graf--li graf-after--li">
+              <strong class="markup--strong markup--li-strong">Data-last</strong>: The last thing the function expects is the data. Since it’s curried this allows you to
+              define what the function will do, assign it to a variable, then later give it the data in a composed function
+              (or on its own).</li>
+            <li name="8204" id="8204" class="graf graf--li graf-after--li">
+              <strong class="markup--strong markup--li-strong">Arguments </strong>to callbacks/iteratees are capped (usually to just the first argument). This avoids side-effects
+              for functions like
+              <code class="markup--code markup--li-code">parseInt </code>that have optional extra arguments. Please note that this does not mean the functions themselves
+              are capped to one argument.</li>
+          </ul>
+          <p name="68af" id="68af" class="graf graf--p graf-after--li graf--trailing">All this may seem confusing right now. So let’s look at a code example!</p>
+        </div>
+      </div>
+    </section>
+    <section name="c36a" class="section section--body">
+      <div class="section-divider">
+        <hr class="section-divider">
+      </div>
+      <div class="section-content">
+        <div class="section-inner sectionLayout--insetColumn">
+          <h4 name="a081" id="a081" class="graf graf--h4 graf--leading">Problem:</h4>
+          <p name="743f" id="743f" class="graf graf--p graf-after--h4">You are building a web page that displays contact information to users. The business specified that contacts must
+            be sorted by first name, filtered to remove any contacts without a phone number, it’s possible that contacts
+            may have been added twice so only unique contact numbers should be shown, and the numbers must be formatted like
+            <code class="markup--code markup--p-code">(xxx)xxx-xxxx</code>.</p>
+          <p name="31d0" id="31d0" class="graf graf--p graf-after--p">The contact object looks like this:</p>
+          <pre name="9a1d" id="9a1d" class="graf graf--pre graf-after--p">{<br>  firstName: &#39;justin&#39;,<br>  lastName: &#39;fuller&#39;,<br>  phone: &#39;1234568490&#39;<br>}</pre>
+          <h4 name="2cbc" id="2cbc" class="graf graf--h4 graf-after--pre">Imperative version:</h4>
+          <pre name="cafb" id="cafb" class="graf graf--pre graf-after--h4">import _ from &#39;lodash&#39;;<br>const data = [ /* data in here */ ];</pre>
+          <pre name="7c2d" id="7c2d" class="graf graf--pre graf-after--pre">const sorted = _.sortBy(data, &#39;firstName&#39;);</pre>
+          <pre name="ef23" id="ef23" class="graf graf--pre graf-after--pre">const filtered = _.filter(sorted, &#39;phone&#39;);</pre>
+          <pre name="2572" id="2572" class="graf graf--pre graf-after--pre">const unique = _.uniqBy(filtered, &#39;phone&#39;);</pre>
+          <pre name="586c" id="586c" class="graf graf--pre graf-after--pre">const formatPhone = c =&gt; ({<br>  ...c,<br>  phone: `(${c.phone.slice(0, 2)})${c.phone.slice(3, 5)-${c.phone.slice(6)}}`<br>});</pre>
+          <pre name="fda7" id="fda7" class="graf graf--pre graf-after--pre">const formatted = _.map(unique, formatPhone);</pre>
+          <pre name="5e35" id="5e35" class="graf graf--pre graf-after--pre">console.log(formatted);</pre>
+          <h4 name="c9f3" id="c9f3" class="graf graf--h4 graf-after--pre">Imperative version 2:</h4>
+          <pre name="00a2" id="00a2" class="graf graf--pre graf-after--h4">import _ from &#39;lodash&#39;;<br>const data = [ /* data here */ ];</pre>
+          <pre name="342d" id="342d" class="graf graf--pre graf-after--pre">const formatPhone = c =&gt; ({<br>  ...c,<br>  phone: `(${c.phone.slice(0, 2)})${c.phone.slice(3, 5)-${c.phone.slice(6)}}`<br>});</pre>
+          <pre name="714a" id="714a" class="graf graf--pre graf-after--pre">const formatted = _.map(<br>  _.uniqBy(<br>    _.filter(<br>      _.sortBy(data, &#39;firstName&#39;)<br>      &#39;phone&#39;,    <br>    ), <br>    &#39;phone&#39;,  <br>  ),<br>  formatPhone,<br>);</pre>
+          <pre name="e4e9" id="e4e9" class="graf graf--pre graf-after--pre">console.log(formatted);</pre>
+          <h4 name="636f" id="636f" class="graf graf--h4 graf-after--pre">Functional version:</h4>
+          <pre name="7f10" id="7f10" class="graf graf--pre graf-after--h4">import fp from ‘lodash/fp’;<br>const data = [ /* data here **/ ];</pre>
+          <pre name="68d7" id="68d7" class="graf graf--pre graf-after--pre">const formatPhone = c =&gt; ({<br>  ...c,<br>  phone: `(${c.phone.slice(0, 2)})${c.phone.slice(3, 5)-${c.phone.slice(6)}}`<br>});</pre>
+          <pre name="d875" id="d875" class="graf graf--pre graf-after--pre">const formatData = fp.compose(<br>  fp.map(formatPhone),<br>  fp.uniqBy(&#39;phone&#39;),<br>  fp.filter(&#39;phone&#39;),<br>  fp.sortBy(&#39;firstName&#39;),<br>);</pre>
+          <pre name="8dd6" id="8dd6" class="graf graf--pre graf-after--pre">console.log(formatData(data));</pre>
+          <p name="91ce" id="91ce" class="graf graf--p graf-after--pre">Those who prefer functional programming would tell you that the last version is more declarative. Instead of telling
+            you
+            <em class="markup--em markup--p-em">how</em> the function works, it tells you
+            <em class="markup--em markup--p-em">what</em> it does!</p>
+          <p name="bcbf" id="bcbf" class="graf graf--p graf-after--p">So let’s walk through each step of the code to unwrap what it does.</p>
+          <ul class="postList">
+            <li name="699f" id="699f" class="graf graf--li graf-after--p">fp.compose — a function that accepts any number of functions as arguments. It then calls them from right to left,
+              just the same as functions are called when you pass them as an argument.</li>
+            <li name="4cdf" id="4cdf" class="graf graf--li graf-after--li">Fp. SortBy, uniqBy, filter, and map all accept the data last. So first we tell the functions what to sort, filter,
+              and map by, then later it accepts the data and returns the result.</li>
+            <li name="37e0" id="37e0" class="graf graf--li graf-after--li graf--trailing">When we call formatData with data it takes the result of each function and passed it to the next function. The
+              result of the last function is the result of the entire chain.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section name="393a" class="section section--body">
+      <div class="section-divider">
+        <hr class="section-divider">
+      </div>
+      <div class="section-content">
+        <div class="section-inner sectionLayout--insetColumn">
+          <p name="6e2c" id="6e2c" class="graf graf--p graf--leading">Now that we see the expressive power of functional programming with Lodash I want to explore some more problems.
+            You’ll begin to see how easy it is, and hopefully you will see the safety that comes with this style of programming!</p>
+          <h4
+            name="dac2" id="dac2" class="graf graf--h4 graf-after--p">Application Composition</h4>
+            <p name="310b" id="310b" class="graf graf--p graf-after--h4">Composition is not limited to working with data. An entire app can be composed together through many smaller
+              functions.</p>
+            <p name="1110" id="1110" class="graf graf--p graf-after--p">Let’s do a mental exercise: think through the steps of an application.</p>
+            <ul class="postList">
+              <li name="bab8" id="bab8" class="graf graf--li graf-after--p">Retrieve any initial configuration (environment variables, command line arguments) and package then into a
+                reusable object.</li>
+              <li name="c19d" id="c19d" class="graf graf--li graf-after--li">Import any third party dependencies.</li>
+              <li name="26f0" id="26f0" class="graf graf--li graf-after--li">Use the configuration and dependencies to bootstrap the app.</li>
+              <li name="35d1" id="35d1" class="graf graf--li graf-after--li">Instantiate routes, services, components , whatever it is the app does.</li>
+            </ul>
+            <p name="6489" id="6489" class="graf graf--p graf-after--li">Do you see how this example or any number of other examples could be strung together? Do you see the benefit
+              that would come from eliminating side effects?</p>
+            <p name="a314" id="a314" class="graf graf--p graf-after--p">At this point you are hopefully wanting to dive in and begin using composition and Lodash/fp to solve problems,
+              so below I wil include a link to the FP docs. Use this to find out how to use your favorite Lodash methods
+              in a functional/composition style!</p>
+            <div name="571d" id="571d" class="graf graf--mixtapeEmbed graf-after--p graf--trailing">
+              <a href="https://github.com/lodash/lodash/wiki/FP-Guide" data-href="https://github.com/lodash/lodash/wiki/FP-Guide"
+                class="markup--anchor markup--mixtapeEmbed-anchor" title="https://github.com/lodash/lodash/wiki/FP-Guide">
+                <strong class="markup--strong markup--mixtapeEmbed-strong">lodash/lodash</strong>
+                <br>
+                <em class="markup--em markup--mixtapeEmbed-em">lodash - A modern JavaScript utility library delivering modularity, performance, &amp; extras.</em>github.com</a>
+              <a
+                href="https://github.com/lodash/lodash/wiki/FP-Guide" class="js-mixtapeImage mixtapeImage u-ignoreBlock" data-media-id="bf81c969787dde6a72973cb600074b09"
+                data-thumbnail-img-id="0*yqpZfaudEeVmzSvC." style="background-image: url(https://cdn-images-1.medium.com/fit/c/160/160/0*yqpZfaudEeVmzSvC.);"></a>
+            </div>
+        </div>
+      </div>
+    </section>
+    <section name="452a" class="section section--body section--last">
+      <div class="section-divider">
+        <hr class="section-divider">
+      </div>
+      <div class="section-content">
+        <div class="section-inner sectionLayout--insetColumn">
+          <p name="63ab" id="63ab" class="graf graf--p graf--leading graf--trailing">Thanks for reading! Stay tuned for more posts about Lodash and functional programming!</p>
+        </div>
+      </div>
+    </section>
+  </section>
+  <footer>
+    <p class="p-tags">Tagged in
+      <a href="https://medium.com/tag/javascript" class="p-tag">JavaScript</a>,
+      <a href="https://medium.com/tag/functional-programming" class="p-tag">Functional Programming</a>,
+      <a href="https://medium.com/tag/front-end-development" class="p-tag">Front End Development</a>,
+      <a href="https://medium.com/tag/software-development" class="p-tag">Software Development</a>,
+      <a href="https://medium.com/tag/web-development" class="p-tag">Web Development</a>
+    </p>
+    <p>By
+      <a href="https://medium.com/@justindanielfuller" class="p-author h-card">Justin Fuller</a> on
+      <a href="https://medium.com/p/d30eb50153d1">
+        <time class="dt-published" datetime="2017-11-09T11:08:35.945Z">November 9, 2017</time>
+      </a>.</p>
+    <p>
+      <a href="https://medium.com/@justindanielfuller/function-composition-with-lodash-d30eb50153d1" class="p-canonical">Canonical link</a>
+    </p>
+    <p>Exported from
+      <a href="https://medium.com">Medium</a> on April 16, 2018.</p>
+  </footer>
+</article>
