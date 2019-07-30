@@ -1,8 +1,6 @@
 
 # Easily create an HTML editor with DesignMode and ContentEditable
 
-
-
 Have you ever wondered how hard it would be to recreate a text editor like the one we use right here on Medium?
 
 If you haven’t seen Medium’s text editor, I would highly recommend checking it out. You are able to write, edit, and style your content (within Medium’s provided styles) right here in your browser.
@@ -13,25 +11,27 @@ Would you believe me if I said you’d need nothing more than vanilla JavaScript
 
 Take a look:
 
-<iframe src="https://medium.com/media/647eea2681fd17a78bbf6193191a462d" frameborder=0></iframe>
+https://codepen.io/Iamjfu/pen/oBYgWV
 
 Hopefully that example demonstrated a few things for you:
 
-1. You have two options. document.designMode for the entire document, and element.contentEditable for just one element.
+1. You have two options. `document.designMode` for the entire document, and `element.contentEditable` for just one element.
 
 1. The browser gives us all the methods we need. Anything outside of document.execCommand is simply for demonstration purposes and error handling.
 
 1. The commands modify the HTML by adding new tags around our content. This allows us to use CSS to style those tags. So simple.
 
-1. The only “gotcha” is that you have to use event.preventDefault(); if you trigger the command from a button click. Otherwise the focus will shift to the button and the command will fail.
+1. The only “gotcha” is that you have to use `event.preventDefault();` if you trigger the command from a button click. Otherwise the focus will shift to the button and the command will fail.
 
 If nothing is selected, the command will fail *(sometimes)*.
 
 If it serves your purposes better, you can also create editable content with HTML.
 
-    <div contenteditable="true">
-      This text can be edited!
-    </div>
+```html
+<div contenteditable="true">
+  This text can be edited!
+</div>
+```
 
 This could work nicely with frameworks like React, Angular, etc. Where you could use a component’s state to control if the content is editable.
 
@@ -49,7 +49,7 @@ Either way you need to:
 
 Below you will find the same example above, but this time when you change the text there will be some information logged to the console. I am using the MutationObserver API to watch for these changes.
 
-<iframe src="https://medium.com/media/5dc96e72bff9d2a88cf249e463a1e045" frameborder=0></iframe>
+https://codepen.io/Iamjfu/pen/NdaemL
 
 So what did I do?
 
@@ -59,16 +59,8 @@ So what did I do?
 
 I think that’s pretty simple. For your purposes, you can replace the console with a backend service that saves the changes. You’ll want to make sure no dangerous JavaScript has been added, so that it doesn’t open you up to [XSS ](https://www.owasp.org/index.php/Cross-site_Scripting_(XSS))attacks.
 
+---
+
 Hi, I’m Justin Fuller. I’m so glad you read my post! I need to let you know that everything I’ve written here is my own opinion and is not intended to represent my employer in *any* way. All code samples are my own, and are completely unrelated to Bank Of America’s code.
 
 I’d also love to hear from you, please feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/justin-fuller-8726b2b1/), [Github](https://github.com/justindfuller), or [Medium](https://medium.com/@justindanielfuller). Thanks again for reading!
-
-![](https://cdn-images-1.medium.com/max/2272/1*0hqOaABQ7XGPT-OYNgiUBg.png)
-
-![](https://cdn-images-1.medium.com/max/2272/1*Vgw1jkA6hgnvwzTsfMlnpg.png)
-
-![](https://cdn-images-1.medium.com/max/2272/1*gKBpq1ruUi0FVK2UM_I4tQ.png)
-> [Hacker Noon](http://bit.ly/Hackernoon) is how hackers start their afternoons. We’re a part of the [@AMI](http://bit.ly/atAMIatAMI) family. We are now [accepting submissions](http://bit.ly/hackernoonsubmission) and happy to [discuss advertising & sponsorship](mailto:partners@amipublications.com) opportunities.
-> If you enjoyed this story, we recommend reading our [latest tech stories](http://bit.ly/hackernoonlatestt) and [trending tech stories](https://hackernoon.com/trending). Until next time, don’t take the realities of the world for granted!
-
-![](https://cdn-images-1.medium.com/max/30000/1*35tCjoPcvq6LbB3I6Wegqw.jpeg)
