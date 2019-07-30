@@ -285,10 +285,10 @@ Alright, now that you’ve seen these proposals in action I hope you feel comfor
 ### The full code for the learning tests can be found [here](https://github.com/JustinDFuller/javascript-proposals-tests).
 
 Here are all four proposal links (bonus!):
-[**tc39/proposal-optional-chaining**](https://github.com/TC39/proposal-optional-chaining)
-[**tc39/proposal-nullish-coalescing**](https://github.com/tc39/proposal-nullish-coalescing)
-[**tc39/proposal-partial-application**](https://github.com/tc39/proposal-partial-application)
-[**tc39/proposal-pipeline-operator**](https://github.com/tc39/proposal-pipeline-operator)
+* [**tc39/proposal-optional-chaining**](https://github.com/TC39/proposal-optional-chaining)
+* [**tc39/proposal-nullish-coalescing**](https://github.com/tc39/proposal-nullish-coalescing)
+* [**tc39/proposal-partial-application**](https://github.com/tc39/proposal-partial-application)
+* [**tc39/proposal-pipeline-operator**](https://github.com/tc39/proposal-pipeline-operator)
 
 ---
 
