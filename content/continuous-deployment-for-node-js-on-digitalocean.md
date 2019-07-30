@@ -17,12 +17,13 @@ This process relies on at least 3 NPM scripts:
 
 * **test**: This will run your tests. I won’t try to tell you how to set up your tests, but this guide assumes you have them. They should be triggered by npm test or yarn test.
 
-* **start**: This starts your application. This actually needs to be set up in a specific way because we will rely on the module [PM2](https://github.com/Unitech/pm2) to start our server. pm2 start index.js -i max — name=\”My-App\” this starts the server with PM2, it starts it in cluster mode and will attempt to restart on failures.
+* **start**: This starts your application. This actually needs to be set up in a specific way because we will rely on the module [PM2](https://github.com/Unitech/pm2) to start our server. `pm2 start index.js -i max — name=\”My-App\”` this starts the server with PM2, it starts it in cluster mode and will attempt to restart on failures.
 
 * **restart**: This will be needed to restart the server after updates are downloaded. This script does not gracefully restart but that option is available through PM2. However, you’ll need to handle that in your code. It should look like this pm2 restart all.
 
 Your package.json should now have this in it:
 
+```json
     {
       "dependencies": {
         "pm2": "^2.4.2"
@@ -33,6 +34,7 @@ Your package.json should now have this in it:
         "test": "your test script goes here"
       }
     }
+```
 
 ## Create a deploy user on DigitalOcean
 
@@ -40,21 +42,25 @@ For this step I’m going to assume you either know how to create a droplet on D
 
 At this point you will want to create a user to use in deployment. For safety you will not want this user to have any root privileges. If you find that your specific use case needs root privileges I will include how to do that, but generally you will not want to give this user full access to your system.
 
-* **Connect: **Open up your terminal and log into your digitalocean droplet via the command: ssh root@YOUR_SERVER_IP. Replaced YOUR_SERVER_IP with the IP address of your DigitalOcean droplet. You can find that on “Access” page when you select your droplet. *If you haven’t added your SSH key to your droplet then scroll down to the bottom of this post to find out how to do that — or use DigitalOcean’s terminal.*
+* **Connect:** Open up your terminal and log into your digitalocean droplet via the command: ssh root@YOUR_SERVER_IP. Replaced YOUR_SERVER_IP with the IP address of your DigitalOcean droplet. You can find that on “Access” page when you select your droplet. *If you haven’t added your SSH key to your droplet then scroll down to the bottom of this post to find out how to do that — or use DigitalOcean’s terminal.*
 
-* **Add user: **You should now be logged into your droplet as the root user. To create the deploy user use the following command: useradd -s /bin/bash -m -d /home/deploy -c “deploy” deploy. This will create the deploy user with a folder in the home directory.
+* **Add user:** You should now be logged into your droplet as the root user. To create the deploy user use the following command: useradd -s /bin/bash -m -d /home/deploy -c “deploy” deploy. This will create the deploy user with a folder in the home directory.
 
-* **Password: **Now you will need to create the password with passwd deploy where it will ask you to type in the password twice. I suggest you make the password different than the root user.
+* **Password:** Now you will need to create the password with passwd deploy where it will ask you to type in the password twice. I suggest you make the password different than the root user.
 
-* **Only give sudo access if needed. **Give deploy access to some root level commands with usermod -aG sudo deploy.
+* **Only give sudo access if needed.** Give deploy access to some root level commands with usermod -aG sudo deploy.
 
 ## Set up Node.js and NPM on the droplet
 
 * Run the following commands to get everything set up. This is where some of the sudo access is needed.
 
+```
     curl -sL [https://deb.nodesource.com/setup_7.x](https://deb.nodesource.com/setup_7.x) | sudo bash -
+```
 
+```
     sudo apt-get install nodejs
+```
 
 You should then be able to run nodejs -v and npm -v to see if it successfully installed. *This may be out of date, and 7.x could be old*. Please check to see what the latest version of Node is before you install.
 
@@ -68,11 +74,13 @@ Yarn install instructions can be found on their website.
 
 To keep things brief here are the directions:
 
+```
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 
     sudo apt-get update && sudo apt-get install yarn
+```
 
 ## Connect to Github via SSH
 
@@ -86,9 +94,9 @@ You will need to create an SSH key on your droplet and add it to Github by follo
 
 Now that you’re connected to Github you can clone your repo.
 
-    git clone [git@github.com](mailto:git@github.com):USERNAME/REPOSITORY.git
+    git clone git@github.com:USERNAME/REPOSITORY.git
 
-Replace USERNAME with your username and REPOSITORY with the repo you want to clone.
+Replace `USERNAME` with your username and `REPOSITORY` with the repo you want to clone.
 
 After this you should have your repository cloned onto your droplet. Run cd REPOSITORY && yarn && yarn start to install dependencies and begin running the server. Our build script will only restart the server, not start it. So you must explicitly start it now.
 
@@ -116,17 +124,23 @@ Sound good? Ok, here’s what to do:
 
 1. You should now be at a screen where you need to configure your tests. The first section gives you setup commands, use these:
 
-    nvm use 6
-    npm i -g yarn
-    yarn
+```
+nvm use 6
+npm i -g yarn
+yarn
+```
 
 3. Next you need to set up your test commands. This part is really complicated, but don’t worry, you can just paste in the following command:
 
-    yarn test
+```
+yarn test
+```
 
 4. If you made it through that difficult step, go ahead and move on to setting up your deployment settings. Once you’re on that part you’ll see a bunch of options to select, like Amazon S3 and Heroku. We’re going to use a custom script, which is the very last option. That script should look like this:
 
-    ssh deploy@DROPLET_IP 'cd NAME_OF_YOUR_PROJECT/; git checkout master; git pull; yarn; yarn restart;'
+```
+ssh deploy@DROPLET_IP 'cd NAME_OF_YOUR_PROJECT/; git checkout master; git pull; yarn; yarn restart;'
+```
 
 Take careful note of the single quotes around the second part of the script. Anything in those quotes will be ran inside the droplet. If the ssh connection fails those commands will not run.
 
@@ -145,16 +159,6 @@ That’s it! Once you push a new commit to your repo Codeship will run your test
 ## Know a better way?
 
 This was my first time setting up a continuous deployment and integration for Node.js and DigitalOcean. If you know of a better way please feel free to share it in the comments!
-
-![](https://cdn-images-1.medium.com/max/2272/1*0hqOaABQ7XGPT-OYNgiUBg.png)
-
-![](https://cdn-images-1.medium.com/max/2272/1*Vgw1jkA6hgnvwzTsfMlnpg.png)
-
-![](https://cdn-images-1.medium.com/max/2272/1*gKBpq1ruUi0FVK2UM_I4tQ.png)
-> [Hacker Noon](http://bit.ly/Hackernoon) is how hackers start their afternoons. We’re a part of the [@AMI](http://bit.ly/atAMIatAMI) family. We are now [accepting submissions](http://bit.ly/hackernoonsubmission) and happy to [discuss advertising & sponsorship](mailto:partners@amipublications.com) opportunities.
-> If you enjoyed this story, we recommend reading our [latest tech stories](http://bit.ly/hackernoonlatestt) and [trending tech stories](https://hackernoon.com/trending). Until next time, don’t take the realities of the world for granted!
-
-![](https://cdn-images-1.medium.com/max/30000/1*35tCjoPcvq6LbB3I6Wegqw.jpeg)
 
 Hi, I’m Justin Fuller. I’m so glad you read my post! I need to let you know that everything I’ve written here is my own opinion and is not intended to represent my employer in *any* way. All code samples are my own, and are completely unrelated to Bank Of America’s code.
 
