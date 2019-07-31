@@ -60,7 +60,9 @@ There you have it! promise-funnel is a tiny library, but I hope you all can find
 
 To install it you can use the command:
 
+```
 npm install promise-funnel --save
+```
 
 You can also view the source code here: [https://github.com/JustinDFuller/promise-funne](https://github.com/JustinDFuller/promise-funnel)l
 
