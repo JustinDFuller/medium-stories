@@ -22,20 +22,19 @@ As it turns out, plenty!
 I can think of a few reasons to modify these events and I’ll give examples below.
 
 * Add or remove something from a copied or cut text.
-
 * Obtain the data that was pasted and use it elsewhere in your app.
 
 That’s not necessarily a *lot*, but with some extra API juice we can enhance our abilities. More on that later.
 
 **Lets take a look at some examples.**
 
-<iframe src="https://medium.com/media/655b80473f01e24ae7d8bb35d4417a9a" frameborder=0></iframe>
+https://gist.github.com/JustinDFuller/70167eaf10104a2c12778bf77c446b6c#file-on-copy-js
 
 In the above example all you have to do is add an eventListener to the copy event. The event that you receive contains clipboardData and its three methods: setData, getData, and clearData.
 
 It actually has all methods and properties of the [DataTransfer](https://html.spec.whatwg.org/multipage/interaction.html#datatransfer) object. So you can inspect the properties, items and types in case you are not sure what arguments to use for setData or getData.
 
-<iframe src="https://medium.com/media/9544663ef36781cd039f53405c869e7c" frameborder=0></iframe>
+https://gist.github.com/JustinDFuller/ebef98aa6dbd0f10350dbf5db62cbce1#file-stop-pasting-js
 
 This example shows what it would look like to not allow a user to paste text into an input with the ID of “passwordConfirmation”. It also doesn’t allow them to paste “theUserPassword” into any field (we’re pretending that’s actually their password. Please ignore for a moment that you should never have the user’s password available in plain text in your web app.).
 
@@ -56,7 +55,7 @@ Since the ClipboardEvent object isn’t exposed in most browsers, we must go a d
 
 Here’s an example shown with CodePen:
 
-<iframe src="https://medium.com/media/536313b04a82e050a2126d947419df25" frameborder=0></iframe>
+https://codepen.io/Iamjfu/pen/WRGZOg
 
 This must be triggered by a user event, like a click. This is a safety feature implemented on important operations, such as opening the file upload window, copying to a clipboard, etc. It helps to keep users safe from websites interacting with their computer when they don’t them want to.
 
@@ -72,20 +71,12 @@ A few notes:
 
 And that’s it! You’re now successfully copying text to your clipboard!
 
-Please feel free to check out some of my other writings on APIs: [Battery](https://hackernoon.com/javascript-apis-battery-c72baa74c203#.u4mh0vg6h), [Console](https://hackernoon.com/javascript-apis-console-23ebce270419#.cheoig9tu), and [Video](https://medium.com/@justindanielfuller/javascript-apis-video-api-db803f9fd1b7#.f1y9dbzuk).
+Please feel free to check out some of my other writings on APIs: [Battery](https://justindfuller.com/posts/14), [Console](https://justindfuller.com/posts/15), and [Video](https://justindfuller.com/posts/16).
 
 Also, please stay on the lookout for my upcoming post on the [DesignMode](https://developer.mozilla.org/en-US/docs/Web/API/Document/designMode) API and how it can be used with execCommand to do some really awesome stuff!
+
+---
 
 Hi, I’m Justin Fuller. I’m so glad you read my post! I need to let you know that everything I’ve written here is my own opinion and is not intended to represent my employer in *any* way. All code samples are my own, and are completely unrelated to Bank Of America’s code.
 
 I’d also love to hear from you, please feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/justin-fuller-8726b2b1/), [Github](https://github.com/justindfuller), or [Medium](https://medium.com/@justindanielfuller). Thanks again for reading!
-
-![](https://cdn-images-1.medium.com/max/2272/1*0hqOaABQ7XGPT-OYNgiUBg.png)
-
-![](https://cdn-images-1.medium.com/max/2272/1*Vgw1jkA6hgnvwzTsfMlnpg.png)
-
-![](https://cdn-images-1.medium.com/max/2272/1*gKBpq1ruUi0FVK2UM_I4tQ.png)
-> [Hacker Noon](http://bit.ly/Hackernoon) is how hackers start their afternoons. We’re a part of the [@AMI](http://bit.ly/atAMIatAMI) family. We are now [accepting submissions](http://bit.ly/hackernoonsubmission) and happy to [discuss advertising & sponsorship](mailto:partners@amipublications.com) opportunities.
-> If you enjoyed this story, we recommend reading our [latest tech stories](http://bit.ly/hackernoonlatestt) and [trending tech stories](https://hackernoon.com/trending). Until next time, don’t take the realities of the world for granted!
-
-![](https://cdn-images-1.medium.com/max/30000/1*35tCjoPcvq6LbB3I6Wegqw.jpeg)
