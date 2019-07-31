@@ -1,7 +1,4 @@
-
-# How writing tests can make you a faster and more productive developer
-
-
+# Writing tests can make you faster, more productive
 
 Most of us have heard of “writer’s block”, but have you heard of “developer’s block”? Just like a writer, a software developer can sit staring at a screen, not knowing where to begin. Sometimes that blank screen can be too intimidating and the code just doesn’t come to you.
 
@@ -11,11 +8,11 @@ Instead of struggling to bring that code out of nowhere, there is a simple way t
 
 You do this by using tests as an outline. You can break your code up into tiny chunks, and this will redirect your focus away from the big problem and on to making a single test pass. Since you’ve broken up your problem into small pieces, each piece will be easier to understand. Eventually when you need to refactor you’ll quickly be alerted when a test breaks!
 
-### How To Use Tests
+## How To Use Tests
 
 It’s actually pretty easy to write tests. Unfortunately it’s also pretty easy to write bad tests.
 
-Bad tests take a long time to write. They also take a long time to run. Have you ever spent five minutes waiting for one hundred tests to run? I have! Bad tests break even if the input and output stays the same. Running them is hard — you have to look up the command or commands every time. Writing them is harder. You spend more time reading the testing library documentation than you do writing your own code.
+Bad tests take a long time to write. They also take a long time to run. Have you ever spent five minutes waiting for one hundred tests to run? I have! Bad tests break even if the input and output stays the same. Running them is hard—you have to look up the command or commands every time. Writing them is harder. You spend more time reading the testing library documentation than you do writing your own code.
 
 In order for tests to allow you to write code faster, you must first know how to write good tests. In the following sections, I’m going to outline how to use tests in a way that will let you code much more efficiently.
 
@@ -25,17 +22,15 @@ Efficient coding means knowing when your code does what you want. It also means 
 
 There are two goals of red green refactor.
 
-First, the tests should break when something goes wrong. Passing tests aren’t good enough if they don’t fail when the wrong things happen. The code assert(true) will always pass, but it will also always be useless!
+First, the tests should break when something goes wrong. Passing tests aren’t good enough if they don’t fail when the wrong things happen. The code `assert(true)` will always pass, but it will also always be useless!
 
 Second, the tests should fail until your code does what you expect. This allows you to immediately know if you’ve written your code correctly.
 
 Red green refactor says you should write code in the following order:
 
 1. Write your test, it should fail.
-
-1. Write only enough code to make your test pass (and not a single keystroke more!)
-
-1. Refactor any existing code to make it more readable, performant, etc., but do not change or add any functionality. Your tests should still pass!
+2. Write only enough code to make your test pass (and not a single keystroke more!)
+3. Refactor any existing code to make it more readable, performant, etc., but do not change or add any functionality. Your tests should still pass!
 
 You repeat this process continually until you have your final working product.
 
@@ -53,7 +48,7 @@ You will also know immediately if your code does what you expect. You will know 
 
 So how do you get started? You should start with a failing test, but what does that look like? It’s as simple as:
 
-<iframe src="https://medium.com/media/c12db05dc05347b286ab9e8733f65490" frameborder=0></iframe>
+https://gist.github.com/JustinDFuller/2dfaa243628c0294ee8663bb563beaab#file-test-js
 
 You can see that I’ve taken “don’t write any logic without a failing test” seriously here! The function has neither been created nor exported. The test fails as expected.
 
@@ -65,7 +60,7 @@ Second, and most importantly, when you follow this rule your code will have the 
 
 Not only does it verify your code, but by writing the test first you are creating a road map for what you want your code to do! That road map, just like the writer’s outline mentioned before, lets you easily fill in the blanks.
 
-<iframe src="https://medium.com/media/ddfbdffde2e33084ed5402a8da51f823" frameborder=0></iframe>
+https://gist.github.com/JustinDFuller/24724c6fcef4d6f3ab83743a8b5b4a6e#file-test-js
 
 This rule can be difficult to follow sometimes. In the code block above you should see that I returned callback but never tested the return value of myFunction. It’s very easy to forget to test something this small, and code coverage reporters don’t help you find it.
 
@@ -80,12 +75,9 @@ Your goal should be to run thousands of tests in only a few seconds. This should
 To accomplish fast tests you will need a few things, in this order.
 
 1. Your code should be fast.
-
-1. Your unit tests should be isolated from expensive IO (Input and Output).
-
-1. A fast test runner
-
-1. A lightweight assertion library
+2. Your unit tests should be isolated from expensive IO (Input and Output).
+3. A fast test runner
+4. A lightweight assertion library
 
 It doesn’t matter how good your test runner is, if your code is slow, your tests will be slow! If your unit tests make real HTTP requests or run actual SQL queries, your tests will be too slow!
 
@@ -97,9 +89,9 @@ Tests only make you write code faster when you can write your tests quickly. You
 
 There should be no complicated commands to run — just npm test or something like npm run test:coverage for code coverage reports.
 
-There should be no complicated API — just assert(value) or assert.equal(expected, actual). Many of us have struggled with complicated assertion libraries where you chain.every.word.to.make.a.sentence(). If you’re like me you end up spending more time reading the docs than writing your tests.
+There should be no complicated API — just `assert(value`) or `assert.equal(expected, actual)`. Many of us have struggled with complicated assertion libraries where you `chain.every.word.to.make.a.sentence()`. If you’re like me you end up spending more time reading the docs than writing your tests.
 
-You should avoid test hooks that set up and tear down your tests. Test runner functions like before() after() beforeEach() and afterEach() should be avoided because it encourages your tests to share state. This could lead to unpredictable tests because of that shared state. Instead you should just have a setup function or functions that return anything you need for your tests.
+You should avoid test hooks that set up and tear down your tests. Test runner functions like `before()` `after()` `beforeEach()` and `afterEach()` should be avoided because it encourages your tests to share state. This could lead to unpredictable tests because of that shared state. Instead you should just have a setup function or functions that return anything you need for your tests.
 
 ### Use Snippets
 
@@ -107,23 +99,23 @@ There are certain tests that you will write over and over. Your test runner has 
 
 Your favorite code editor will have support for snippets. It doesn’t matter if you use a full IDE or a simple editor like vim. You can easily make snippets.
 
-<iframe src="https://medium.com/media/d91213506a662e1765a00bf03242d4dd" frameborder=0></iframe>
+https://gist.github.com/JustinDFuller/288eef9d311631c06cc0e06be90a6315#file-snippets-js
 
-I prefer to use Ava for my tests. The above snippet creates an entire basic test whenever I start a new test file using Visual Studio Code. You can see that ${1} is included for the variable parts of the snippet. VScode allows me to tab through these, which I can usually do in a few seconds, and I have my first test ready!
+I prefer to use Ava for my tests. The above snippet creates an entire basic test whenever I start a new test file using Visual Studio Code. You can see that `${1}` is included for the variable parts of the snippet. VScode allows me to tab through these, which I can usually do in a few seconds, and I have my first test ready!
 
-You can do the same thing for mocha or any other test runner. I recommend making snippets for all the common tests that you create. Whenever you’ve repeated yourself a couple times — take a break and make a snippet!
+You can do the same thing for mocha or any other test runner. I recommend making snippets for all the common tests that you create. Whenever you’ve repeated yourself a couple times—take a break and make a snippet!
 
 ### Avoid mocking
 
-While I suggest that you don’t make fun of people — that’s not quite what I’m talking about here!
+While I suggest that you don’t make fun of people—that’s not quite what I’m talking about here!
 
 It’s very common to use a library like [sinon](http://sinonjs.org) or [proxyquire](https://github.com/thlorenz/proxyquire) to change how dependency modules work. Usually we use them to isolate your code from expensive operations like an HTTP request, reading from a database, or operating on the file system.
 
 I’ve stopped using these libraries because I believe there is a better way! Instead you can construct your modules to accept an interface of dependencies. Here’s what it looks like:
 
-<iframe src="https://medium.com/media/41366b8db60259f4762b981952071569" frameborder=0></iframe>
+https://gist.github.com/JustinDFuller/18e1516cc0fe6b2e0c5b9535966b7bb0#file-dependencies-js
 
-Now you don’t need proxyquire or sinon or anything to change what the fs module does! You can provide that directly from your tests. So you don’t have to learn the sinon or proxyquire API, you don’t have to remember to call restore() on stubbed functions. Your tests are now simpler and easier and you can continue to write code faster than ever!
+Now you don’t need proxyquire or sinon or anything to change what the fs module does! You can provide that directly from your tests. So you don’t have to learn the sinon or proxyquire API, you don’t have to remember to call `restore()` on stubbed functions. Your tests are now simpler and easier and you can continue to write code faster than ever!
 
 ## Wrapping up
 
@@ -134,18 +126,15 @@ I hope that you see the benefits to developing like this. Like any change it won
 Here’s a quick summary:
 
 * Red, Green, Refactor
-
 * Don’t write untested code
-
 * Keep your tests fast
-
 * Keep your tests simple
-
 * Use snippets
-
 * Avoid mocking
 
 Please share in the comments your experiences with testing your code. Have you been able to leverage your tests to deliver your product more quickly?
+
+---
 
 Hi, I’m Justin Fuller. I’m so glad you read my post! I need to let you know that everything I’ve written here is my own opinion and is not intended to represent my employer in *any* way. All code samples are my own, and are completely unrelated to Bank Of America’s code.
 
