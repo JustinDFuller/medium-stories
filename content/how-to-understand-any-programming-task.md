@@ -1,7 +1,4 @@
-
 # How to understand any programming task
-
-
 
 The day has finally arrived. Is it your first day on your job, or have you been doing this for ten years? It doesn’t matter. We all eventually find ourselves with a task that we simply do not understand.
 
@@ -41,7 +38,7 @@ You may have to ask other developers, your team lead, product owner, business an
 
 That’s fine though. It means you’ll be taking scattered knowledge and condensing it to reside in one place. That place is in yourself and now you will be able to produce the best possible result!
 
-**A final warning before you learn the steps: **don’t over-formalize this process. The point here is to help you *quickly *understand a problem. It shouldn’t create barriers or red tape! Instead it should provide you with a systematic plan to tackle a problem you don’t understand.
+**A final warning before you learn the steps:** don’t over-formalize this process. The point here is to help you *quickly* understand a problem. It shouldn’t create barriers or red tape! Instead it should provide you with a systematic plan to tackle a problem you don’t understand.
 
 ## The first step: Analyzing the task
 
@@ -54,18 +51,14 @@ The distinction here is important. It can be dangerous to jump straight in to im
 To classify a task means to determine what kind of work you’ll be doing to solve this problem. Here are some examples of types of tasks:
 
 * Bug fix
-
 * New feature
-
 * New application
-
 * Research Assignment
-
 * Performance improvement
 
 Remember that these are not all the possible options.
 
-The goal here is to determine what *kind *of work you are expected to do. This is important because it has a direct effect on *what *work you do.
+The goal here is to determine what *kind* of work you are expected to do. This is important because it has a direct effect on *what *work you do.
 
 This step is particularly important for vague requirements. An example of a vague requirement is: “We need a way to purge our clients’ caches after an update to the website.”
 
@@ -89,7 +82,7 @@ Here’s a good example of a summary: “When we update the site, we append a un
 
 This task passes the simplicity litmus test and you probably don’t need to create multiple tasks.
 
-A bad example might look like: *“*When we update the site we append a unique number to the files so that the browser knows it needs to use the latest code. We also have to send a message to our CDN letting it know that it needs to update the files. Also the IOS and Android apps will need to have an update sent to the app store. Also…”
+A bad example might look like: "When we update the site we append a unique number to the files so that the browser knows it needs to use the latest code. We also have to send a message to our CDN letting it know that it needs to update the files. Also the IOS and Android apps will need to have an update sent to the app store. Also…"
 
 This one clearly fails the test. There’s a lot of work to do and it may need to be identified and tracked separately.
 
@@ -105,16 +98,13 @@ Remember that you are still analyzing the task you were given. I would recommend
 
 Our caching task is very simple and may not actually need an outline. For this example we’ll consider a more complex issue.
 
-Our next task is a new feature: “Each user should be shown a targeted advertisement for an internal product. This ad should be tailored to fit their individual needs based on the data we have collected.”
+Our next task is a new feature: "Each user should be shown a targeted advertisement for an internal product. This ad should be tailored to fit their individual needs based on the data we have collected."
 
 To outline the major parts you will need to think clearly about what each part of the requirement will have you do.
 
 * Our current advertisements will need to be broken down in such a way that they can correlate to some specific user metric.
-
 * There will need to be a way for our marketing team to map new advertisements to a piece or pieces of user data (without coding!)
-
 * The system will need to aggregate metrics about a user that are relevant to our advertisements.
-
 * Finally, you need to create some kind of system that receives a user id and outputs an advertisement.
 
 The beauty of a list like this is that it can be used to quickly verify with your team or boss! So in this example, maybe you’ve run it by your team lead and he decided that there needs to be one more major piece:
@@ -127,7 +117,7 @@ Before we move on, I want to address a possible criticism that you might have.
 
 You might be thinking: “In a proper business this is the type of work that should be done before requirements ever reach the developer”, and I definitely agree with you!
 
-However, we sadly don’t live in a perfect world. Sometimes requirements aren’t always completely fleshed out before they get to a developer. This means we must all do our best to properly evaluate the requirements before development starts.
+However, we sadly don’t live in a perfect world. Sometimes requirements aren't always completely fleshed out before they get to a developer. This means we must all do our best to properly evaluate the requirements before development starts.
 
 ### Define the problem or problems that you are trying to solve.
 
@@ -217,7 +207,7 @@ If you find that you don’t have all the information you need, then it might be
 
 * Have well reasoned explanations of your disagreements ready to be presented.
 
-If you can’t explain *why *something is wrong, can you really say that you actually know it’s wrong? I would suggest writing down the reasons why something is wrong and what can be done to fix it.
+If you can’t explain *why* something is wrong, can you really say that you actually know it’s wrong? I would suggest writing down the reasons why something is wrong and what can be done to fix it.
 
 Alternatively, if you don’t have a solution to fix it, state clearly at the beginning that you don’t know.
 
@@ -234,11 +224,8 @@ In order to make sure we disagree objectively, here are a few measures that will
 Objective disagreements do one or more of the following:
 
 * Show that the solution is uninformed.
-
 * Show that the solution is misinformed.
-
 * Show that the problem or solution is illogical.
-
 * Show that the solution is incomplete.
 
 To be uninformed is not an insult, but instead it means that information was lacking when a solution was created. Perhaps they did not know about a system that currently exists and can perform the actions that are needed.
@@ -262,26 +249,22 @@ Here’s a simplified list of the steps:
 **Step 1 — Analyze**
 
 * Classify
-
 * Summary
-
 * Outline
-
 * Define the problem
 
 **Step 2 — Interpret and Evaluate**
 
 * Clarify terms
-
 * Identify the tasks
-
 * Determine if the problem will be solved
 
 **Step 3 — Think Critically**
 
 * Know when to disagree
-
 * Know how to disagree
+
+---
 
 Hi, I’m Justin Fuller. I’m so glad you read my post! I need to let you know that everything I’ve written here is my own opinion and is not intended to represent my employer in *any* way. All code samples are my own, and are completely unrelated to Bank Of America’s code.
 
