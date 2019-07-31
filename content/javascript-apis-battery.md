@@ -1,7 +1,4 @@
-
 # JavaScript APIs: Battery
-
-
 
 Yes, you heard me right, the Battery API! As the web expands, so does the number of devices we expect to use our programs. This API can be particularly useful for protecting our mobile users and their precious battery life! So before we look at the API lets think of some reasons why we might need such a thing:
 
@@ -13,37 +10,37 @@ Yes, you heard me right, the Battery API! As the web expands, so does the number
 
 So let’s take a look at how you might use it.
 
-<iframe src="https://medium.com/media/4063266cce3ebe91b936b9af6b2dc5d5" frameborder=0></iframe>
+https://gist.github.com/JustinDFuller/602e16f9cb147fecc441af9827238b3a#file-battery-js
 
 A few things to note in the above example:
 
 * getBattery is not available in all browsers. Make sure you perform a check before attempting to use it!
 
-* The return value of getBattery is a Promise which resolves with the BatteryManager object.
+* The return value of getBattery is a `Promise` which resolves with the BatteryManager object.
 
-* When the onchange function is called, you must re-inspect the original BatteryManager object that was provided by the promise. It will be modified and contain the new battery information.
+* When the `onchange` function is called, you must re-inspect the original `BatteryManager` object that was provided by the promise. It will be modified and contain the new battery information.
 
-* When the onchange function is called it receives one argument, event, which helpfully contains event.type that tells us which battery event happened. This allows you to reuse a single event handler!
+* When the `onchange` function is called it receives one argument, event, which helpfully contains `event.type` that tells us which battery event happened. This allows you to reuse a single event handler!
 
 ## Using The Data
 
-Now that we see how to *get *the data, let’s take a look at how we can *use* it!
+Now that we see how to *get* the data, let’s take a look at how we can *use* it!
 
-In this example we will watch for the battery to get low, and show an alert when it’s below a certain level.
+In this example, we will watch for the battery to get low, and show an alert when it’s below a certain level.
 
-<iframe src="https://medium.com/media/e3dbbaa69abefcf62588ac354286845b" frameborder=0></iframe>
+https://gist.github.com/JustinDFuller/a35c05fd6dcebf8c8fe8f4f6335ba6c1#file-low-battery-js
 
 The battery properties we are inspecting:
 
-* dischargeTime is the amount of time until the battery is empty, in seconds. Its value will be infinity if the device is plugged in to a power source.
+* `dischargeTime` is the amount of time until the battery is empty, in seconds. Its value will be infinity if the device is plugged into a power source.
 
-* level is a percentage. So 0.2 is 20%.
+* `level` is a percentage. So 0.2 is 20%.
 
-You can customize these to fit your needs. In a highly time-sensitive environment you may want to let them know earlier than 20% or 20 minutes.
+You can customize these to fit your needs. In a highly time-sensitive environment, you may want to let them know earlier than 20% or 20 minutes.
 
 A final note: Most devices will warn users when the battery is low, so you likely won’t need to add the example warning message to your application. Instead, you could limit your processes and display a message that processing is limited until the battery has been charged. Remember, this API is just another resource that allows you to solve problems for your users.
 
-Feel free to check out some of my past posts: [Console API](https://hackernoon.com/javascript-apis-console-23ebce270419#.w6dps5pi1), [Video API](https://medium.com/@justindanielfuller/javascript-apis-video-api-db803f9fd1b7#.7vgvrfhrj).
+Feel free to check out some of my past posts: [Console API](https://justindfuller.com/posts/15), [Video API](https://justindfuller.com/posts/16).
 
 ---
 
