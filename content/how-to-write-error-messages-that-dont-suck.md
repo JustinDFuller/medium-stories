@@ -83,7 +83,7 @@ The choice of what data is safe to print is tricky: if you choose exactly what p
 
 There are two ways to include relevant data when you don’t know exactly which property or action caused the error.
 
-The first should be used when you intend for the error to be read by humans, you put the data right in the message: An error was received: “Duplicate entry found for user.email”, while upserting user: { “email”: “justinfuller@company.com” }. This error style has its drawbacks, like the entire object being placed into the error message that could be sent somewhere unintended. If, however, you know it’s safe then this style has the advantage of giving complete details about the situation.
+The first should be used when you intend for the error to be read by humans, you put the data right in the message: `An error was received: “Duplicate entry found for user.email”, while upserting user: { “email”: “justinfuller@company.com” }`. This error style has its drawbacks, like the entire object being placed into the error message that could be sent somewhere unintended. If, however, you know it’s safe then this style has the advantage of giving complete details about the situation.
 
 In other cases you may not want the data to leak to a log file or an API response. You can provide a reference ID, a time stamp that can be manually or automatically referenced to data later, or some other property that will allow the developer to track down the pesky data-point that caused an error.
 
