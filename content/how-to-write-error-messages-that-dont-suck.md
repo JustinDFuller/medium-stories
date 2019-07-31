@@ -1,8 +1,6 @@
 
 # How To Write Error Messages That Don’t Suck
 
-Learning JavaScript, with Justin Fuller
-
 “A validation error occurred.” Yep. Thanks!
 
 The release is imminent; this is the last update that needs to be verified, and I get an error message that’s as useful as the close button on an elevator.
@@ -31,11 +29,15 @@ When a police officer pulls you over to give you a ticket, does it say “Bad Dr
 
 So the error message from earlier should not be, “A validation error occurred”, but instead:
 
-    Unable to save model "user" because the property "email" with value "JustinFuller@company.com" already exists.
+```
+Unable to save model "user" because the property "email" with value "JustinFuller@company.com" already exists.
+```
 
 Instead of a simple error that says, “Invalid option” use:
 
-    The option "update" is not valid. Valid options include "upsert", "get", and "delete".
+```
+The option "update" is not valid. Valid options include "upsert", "get", and "delete".
+```
 
 These updated error messages attempt to help us understand the cause, giving us a start toward the solution.
 
@@ -49,13 +51,17 @@ For anything that has a prerequisite step, such as configuration or validation, 
 
 I’ll add more detail to one of the earlier examples:
 
-    The option “update” is not valid. Valid options include “upsert”, “get”, and “delete”. **If you expected “update” to be an option, you must first export it from the file: "./src/controllers/index.js".**
+```
+The option “update” is not valid. Valid options include “upsert”, “get”, and “delete”. **If you expected “update” to be an option, you must first export it from the file: "./src/controllers/index.js".**
+```
 
 Now you are anticipating how this might have happened: the developer probably just forgot to export the new option. The error becomes a reminder of that step. You’ve now shown two possible causes of the error; the first is a possible typo (here are the valid options) and the second is a configuration error (here’s where it should be exported).
 
 The React library does an excellent job of anticipating how errors might have occurred. They don’t address every edge case, but they do give helpful hints for the most common errors. For example, you can’t use the function reactDom.renderToNodeString() in the browser because node streams don’t exist there. So React gives you a suggestion of how it happened and how to fix it:
 
-    ReactDOMServer.renderToNodeStream(): The streaming API is not available in the browser. Use ReactDOMServer.renderToString() instead.
+```
+ReactDOMServer.renderToNodeStream(): The streaming API is not available in the browser. Use ReactDOMServer.renderToString() instead.
+```
 
 There could be other ways for that error to occur, but they guess that the most common reason is that renderToNodeStream was called in the browser.
 
@@ -65,7 +71,9 @@ While writing error messages you must remember that applications rarely do only 
 
 In the first example I included the phrase:
 
-    The property “email” with value “JustinFuller@company.com” already exists.
+```
+The property “email” with value “JustinFuller@company.com” already exists.
+```
 
 This is very useful, but could be impractical. It may take too much effort or time to create natural language errors for every variation of data, or in some cases we may simply be passing on a failure outside of our own control, so the only option left is to give a good description and include as much relevant data that is safe to print.
 
@@ -83,7 +91,9 @@ In other cases you may not want the data to leak to a log file or an API respons
 
 I’ll be the first to admit that I’m prone to making simple mistakes. I type “upswert” instead of “upsert”; I type “npm tes” instead of “npm test”. So it’s really refreshing when I get an error message saying:
 
-    Unknown command, "npm tes". Did you mean npm test?
+```
+Unknown command, "npm tes". Did you mean npm test?
+```
 
 When the developers prepped for this, they obviously gazed into the future and saw that someone would make that typo — or maybe they just know that humans are prone to silly errors .
 
@@ -96,6 +106,8 @@ For some errors it will be possible to give a solution to the error instead of j
 ### An error that doesn’t suck
 
 So, do you want to provide helpful error messages? In the next error you write, try to include a full description of what happened, how it might have happened, any relevant data that is safe to include, and any steps that might help resolve the problem.
+
+---
 
 Hi, I’m Justin Fuller. I’m so glad you read my post! I need to let you know that everything I’ve written here is my own opinion and is not intended to represent my employer in any way. All code samples are my own, and are completely unrelated to Bank Of America’s code.
 
