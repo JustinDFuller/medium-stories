@@ -46,8 +46,7 @@ You could go on to use the value retrieved from getData elsewhere in your app. A
 > Copying text to the clipboard shouldn’t be hard. It shouldn’t require dozens of steps to configure or hundreds of KBs to load. But most of all, it shouldn’t depend on Flash or any bloated framework. — [clipboardjs.com](https://clipboardjs.com/)
 
 Before we get into this, I’d like to introduce you to an open source project that simplifies everything I’m about to show you. It’s called “clipboard.js” and it allows you to easily copy text to your clipboard. You may find it easier than doing this on your own. It’s quite a small library, and has a very simple API.
-[**clipboard.js**
-*Copy text to the clipboard shouldn't be hard. It shouldn't require dozens of steps to configure or hundreds of KBs to…*clipboardjs.com](https://clipboardjs.com/)
+[**clipboard.js**](https://clipboardjs.com/)
 
 But we’re here to learn, so lets look at how you can copy text to the user’s clipboard using only Web APIs.
 
