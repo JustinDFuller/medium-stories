@@ -91,6 +91,8 @@ You could consider React and [React-Native](https://facebook.github.io/react-nat
 
 Now that you’ve learned about dependency inversion and the open-closed principle, it’s time for you to go and apply it in your code. Don’t write any imports in the next module you write. Instead, allow it to accept an interface. In your tests, you’ll be able to avoid third-party libraries that mutate your dependencies! Then try to start identifying where common interfaces can be used. You’ll slowly but surely create a better application!
 
-Please share in the comments about your experiences with these principles, and other ways you’ve avoided needing to use mocks and stubs in your tests.
+---
 
-Hi, I’m Justin Fuller. I’m so glad you read my post! I need to let you know that everything I’ve written here is my own opinion and is not intended to represent my employer in any way. All code samples are my own.
+Hi, I’m Justin Fuller. I’m so glad you read my post! I need to let you know that everything I’ve written here is my own opinion and is not intended to represent my employer in *any* way. All code samples are my own and are completely unrelated to my employer's code.
+
+I’d also love to hear from you, please feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/justin-fuller-8726b2b1/), [Github](https://github.com/justindfuller), or [Twitter](https://twitter.com/justin_d_fuller). Thanks again for reading!

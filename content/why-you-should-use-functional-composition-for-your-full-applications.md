@@ -135,8 +135,8 @@ First you compose functions, then you compose components, then you compose featu
 
 [Here is an example](https://github.com/JustinDFuller/compose-app) of a (small) fully composed application. It contains a composed app with configuration, third party dependencies, a database connection, models, websockets, and an express server.
 
-I’d love to hear your feedback in the comments below. Have you ever composed a full application? Can you think of times where this would be problematic? Can you think of benefits besides dependency injection and ease of following imports?
+---
 
-Hi, I’m Justin Fuller. I’m so glad you read my post! I need to let you know that everything I’ve written here is my own opinion and is not intended to represent my employer in *any* way. All code samples are my own, and are completely unrelated to Bank Of America’s code.
+Hi, I’m Justin Fuller. I’m so glad you read my post! I need to let you know that everything I’ve written here is my own opinion and is not intended to represent my employer in *any* way. All code samples are my own and are completely unrelated to my employer's code.
 
-I’d also love to hear from you, please feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/justin-fuller-8726b2b1/), [Github](https://github.com/justindfuller), or [Medium](https://medium.com/@justindanielfuller). Thanks again for reading!
+I’d also love to hear from you, please feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/justin-fuller-8726b2b1/), [Github](https://github.com/justindfuller), or [Twitter](https://twitter.com/justin_d_fuller). Thanks again for reading!

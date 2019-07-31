@@ -103,10 +103,8 @@ Hermetic Servers:
 
 [https://testing.googleblog.com/2012/10/hermetic-servers.html](https://testing.googleblog.com/2012/10/hermetic-servers.html)
 
-### **Disclaimer**
+---
 
-The views and suggestions here are my own, not my employer’s. I in no way intend to represent them through this post.
+Hi, I’m Justin Fuller. I’m so glad you read my post! I need to let you know that everything I’ve written here is my own opinion and is not intended to represent my employer in *any* way. All code samples are my own and are completely unrelated to my employer's code.
 
-### **Get in touch**
-
-I’d love to hear from you. Please feel free to reach out to me on [LinkedIn](https://www.linkedin.com/in/justin-fuller-8726b2b1/) or [Github](https://github.com/justinDFuller/).
+I’d also love to hear from you, please feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/justin-fuller-8726b2b1/), [Github](https://github.com/justindfuller), or [Twitter](https://twitter.com/justin_d_fuller). Thanks again for reading!
