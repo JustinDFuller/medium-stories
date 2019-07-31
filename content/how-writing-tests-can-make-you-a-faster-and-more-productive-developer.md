@@ -54,7 +54,7 @@ You can see that I’ve taken “don’t write any logic without a failing test�
 
 So how does this make you write code faster? Well, two things are happening here.
 
-First, if you’re struggling to get started, this helps you to overcome your mental block by forcing you to begin doing *something. *I believe that just like in Newton’s law of motion — an object in motion stays in motion — a developer writing code tends to continue writing code.
+First, if you’re struggling to get started, this helps you to overcome your mental block by forcing you to begin doing *something.* I believe that just like in Newton’s law of motion — an object in motion stays in motion — a developer writing code tends to continue writing code.
 
 Second, and most importantly, when you follow this rule your code will have the huge advantage of *only* doing what you’ve verified that it does. You are far less likely to have any surprises down the road because your test suite automatically verifies every character of your code.
 
@@ -138,4 +138,4 @@ Please share in the comments your experiences with testing your code. Have you b
 
 Hi, I’m Justin Fuller. I’m so glad you read my post! I need to let you know that everything I’ve written here is my own opinion and is not intended to represent my employer in *any* way. All code samples are my own, and are completely unrelated to Bank Of America’s code.
 
-I’d also love to hear from you, please feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/justin-fuller-8726b2b1/), [Github](https://github.com/justindfuller), or [Medium](https://medium.com/@justindanielfuller). Thanks again for reading!
+I’d also love to hear from you, please feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/justin-fuller-8726b2b1/), [Github](https://github.com/justindfuller), or [Twitter](https://twitter.com/justin_d_fuller). Thanks again for reading!
