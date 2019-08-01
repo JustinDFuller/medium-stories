@@ -2,8 +2,6 @@
 
 Welcome to my intervention. I’m a refactoring addict and I’m not afraid to admit it, but there’s only one problem: I’ve been doing it backward. You see, what I’ve been doing could be more accurately described as premature code abstraction.
 
-![](https://cdn-images-1.medium.com/max/NaN/1*oCtk28IdNdpjnyMGiRsfLA.jpeg)
-
 We all know about refactoring. If you’ve read even a single programming book, or if you spend much time on Medium, you’ll have heard all about it. It’s an important concept that keeps code understandable, maintainable, and extensible.
 
 At least that’s what everyone tells me.
