@@ -18,7 +18,7 @@ This process relies on at least 3 NPM scripts:
 
 * **start**: This starts your application. This needs to be set up in a specific way because we will rely on the module [PM2](https://github.com/Unitech/pm2) to start our server. `pm2 start index.js -i max — name=\”My-App\”` this starts the server with PM2, it starts it in cluster mode and will attempt to restart on failures.
 
-* **restart**: This will be needed to restart the server after updates are downloaded. This script does not gracefully restart but that option is available through PM2. However, you’ll need to handle that in your code. It should look like this pm2 restart all.
+* **restart**: This will be needed to restart the server after updates are downloaded. This script does not gracefully restart but that option is available through PM2. However, you’ll need to handle that in your code. It should look like this `pm2 restart all`.
 
 Your package.json should now have this in it:
 
@@ -41,7 +41,7 @@ For this step, I’m going to assume you either know how to create a droplet on 
 
 At this point, you will want to create a user to use in deployment. For safety, you will not want this user to have any root privileges. If you find that your specific use case needs root privileges I will include how to do that, but generally, you will not want to give this user full access to your system.
 
-* **Connect:** Open up your terminal and log into your digitalocean droplet via the command: ssh root@YOUR_SERVER_IP. Replaced YOUR_SERVER_IP with the IP address of your DigitalOcean droplet. You can find that on “Access” page when you select your droplet. *If you haven’t added your SSH key to your droplet then scroll down to the bottom of this post to find out how to do that — or use DigitalOcean’s terminal.*
+* **Connect:** Open up your terminal and log into your digitalocean droplet via the command: `ssh root@YOUR_SERVER_IP`. Replaced `YOUR_SERVER_IP` with the IP address of your DigitalOcean droplet. You can find that on “Access” page when you select your droplet. *If you haven’t added your SSH key to your droplet then scroll down to the bottom of this post to find out how to do that—or use DigitalOcean’s terminal.*
 
 * **Add user:** You should now be logged into your droplet as the root user. To create the deploy user use the following command: `useradd -s /bin/bash -m -d /home/deploy -c “deploy” deploy`. This will create the deploy user with a folder in the home directory.
 
@@ -83,7 +83,7 @@ sudo apt-get update && sudo apt-get install yarn
 ## Connect to Github via SSH
 
 Connecting to GitHub via SSH is a simple process and Github maintains great documentation about how to set it up. Check it out in the link below:
-[Connecting to GitHub with SSH — User Documentation](https://help.github.com/articles/connecting-to-github-with-ssh/)
+[Connecting to GitHub with SSH—User Documentation](https://help.github.com/articles/connecting-to-github-with-ssh/)
 
 You will need to create an SSH key on your droplet and add it to Github by following those directions. This is necessary not just for the next step, but also because later we will use git to pull down the latest changes to the droplet after the CI passes. Specifically, make sure your SSH key is connected to the deploy user that we created earlier.
 
@@ -97,7 +97,7 @@ git clone git@github.com:USERNAME/REPOSITORY.git
 
 Replace `USERNAME` with your username and `REPOSITORY` with the repo you want to clone.
 
-After this, you should have your repository cloned onto your droplet. Run cd REPOSITORY && yarn && yarn start to install dependencies and begin running the server. Our build script will only restart the server, not start it. So you must explicitly start it now.
+After this, you should have your repository cloned onto your droplet. Run `cd REPOSITORY && yarn && yarn start` to install dependencies and begin running the server. Our build script will only restart the server, not start it. So you must explicitly start it now.
 
 ## Set Up Codeship
 
@@ -142,8 +142,7 @@ Take careful note of the single quotes around the second part of the script. Any
 We’re almost done. But right now Codeship cannot connect to your droplet in that deploy script we just created.
 
 Head over to your project settings and find “General” where you will find your “SSH public key”. This is the SSH key you need to add to your droplet. Read the following link to learn about how to add an SSH key.
-[**How To Configure SSH Key-Based Authentication on a FreeBSD Server | DigitalOcean**
-*SSH, or secure shell, is a network protocol that provides a secure, encrypted way to communicate with and administer…*www.digitalocean.com](https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-freebsd-server)
+[How To Configure SSH Key-Based Authentication on a FreeBSD Server](https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-freebsd-server)
 
 ## Test it out
 
