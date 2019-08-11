@@ -110,7 +110,7 @@ afterAll(function () {
 test("Upload a new file to the user's drive", async function (t) {
   const fileContents = JSON.stringify({ 
     foo: 'bar',
-    boo: 'baz
+    boo: 'baz'
   }, null, 2)
   
   const file = FileBuilder()
