@@ -8,7 +8,27 @@ Mocking, stubbing, or maybe—even better—[dependency inversion](https://mediu
 
 Take a look at this test where we are saving a file using an external file service.
 
-![](https://cdn-images-1.medium.com/max/2800/0*y5AJuTRbi2HBrah3)
+```js
+test("Upload a new file to the user's drive", async function (t) {
+  const driveService = {
+    write(file) {
+      return Promise.resolve('/path/to/uploaded-file.json')
+    }
+  }
+  
+  const fileUploader = FileUploader(driveService)
+  
+  const file = FileBuilder()
+ 	.setPath('/path/to/uploaded-file.json')
+  	.setContent(JSON.stringify({
+  		foo: 'bar',
+    	boo: 'baz'
+  	}, null, 2))
+  
+  const url = await fileUploader.uploadFile(file)
+  t.is(url, '/path/to/uploaded-file.json')
+})
+```
 
 Can you determine if this is a useful test?
 
@@ -50,13 +70,59 @@ Oops! Here, as shown in green, only the file service was tested. We wanted to te
 
 One option is to create an isolated version of the Drive Service. Ideally, this will be owned by the team that created the Drive Service. To ensure that the fake server is trustworthy they will run the same tests against both the fake server and the real server.
 
-![](https://cdn-images-1.medium.com/max/2252/0*Gp-SMfRFeoTXyimI)
+```js
+export function DriveService() {
+  const dataStorage = S3BucketDataStorage()
+  const fileStorage = FileStorage(dataStorage)
+  const { port } = Server().fromRoutes(
+    DriveServerRoutes(fileStorage)
+  ).startServer()
+  return port
+}
+
+export function InMemoryDriveService() {
+  const dataStorage = SqLiteInMemoryDataStorage()
+  const fileStorage = FileStorage(dataStorage)
+  const { port } = Server().fromRoutes(
+    DriveServerRoutes(fileStorage)
+  ).startServer({ port: 0 })
+  return port
+}
+```
 
 The above code represents a sample isolated server implementation. You can see that it is very similar to the real server implementation, except that it uses an in-memory data store instead of a real file storage device. It even uses port 0 to ensure that an [ephemeral port](https://en.wikipedia.org/wiki/Ephemeral_port) is used, further increasing the stability of its tests.
 
 Now that the Drive team is providing this isolated server, our integration tests can safely start it and use it during integration tests. Let’s rewrite that original test as an integration test and see if it becomes more useful.
 
-![](https://cdn-images-1.medium.com/max/2800/0*7I8V3PLQgOKOCv0w)
+```js
+let port
+let fileHandler
+
+beforeAll(function () {
+  port = DriveServer.InMemoryDriveService()
+    fileHandler = FileHandler(DriveService({ port }))
+})
+
+afterAll(function () { 
+  DriveServer.stopService(port)
+})
+
+test("Upload a new file to the user's drive", async function (t) {
+  const fileContents = JSON.stringify({ 
+    foo: 'bar',
+    boo: 'baz
+  }, null, 2)
+  
+  const file = FileBuilder()
+    .setPath('/path/to/uploaded-file.json')
+    .setContent(fileContents)
+    
+    const url = await fileHandler.uploadFile(file)
+    t.is(url, '/path/to/uploaded-file.json')
+    const contents = await fileHandler.readFile(url)
+    t.deepEqual(contents, fileContents)
+})
+```
 
 Now is our test more useful? Since we made the call to the real Drive Server API (even though it saves to a different storage device, the API and business logic remain the same) we will know if our integration breaks.
 
@@ -76,7 +142,21 @@ Remember, we’re still talking about integrations here—code that interacts wi
 
 Thankfully they understand that not everyone can use their isolated in-memory server, so they also created a fake version of their API. Take a look.
 
-![](https://cdn-images-1.medium.com/max/2320/0*nRPxOUoRRxlyo_bD)
+```js
+function FakeDriveService() {
+  const files = new Map()
+
+  return {
+    write(file) {
+    	files.set(file.getPath(), file.getContent())
+    	return Promise.resolve(file.getPath())
+    },
+    read(filePath) {
+    	return Promise.resolve(files.get(filePath))
+    }
+  }
+}
+```
 
 This `FakeDriveService` is an implementation that the Drive Team could provide to anyone who uses their service. They are saying “If you test with the FakeDriveService you can trust that the real DriveService will work. We run tests against both to ensure that they work the same.”
 
