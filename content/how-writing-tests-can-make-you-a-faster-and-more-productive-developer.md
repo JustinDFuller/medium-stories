@@ -48,7 +48,16 @@ You will also know immediately if your code does what you expect. You will know 
 
 So how do you get started? You should start with a failing test, but what does that look like? It’s as simple as:
 
-https://gist.github.com/JustinDFuller/2dfaa243628c0294ee8663bb563beaab#file-test-js
+```js
+import assert from 'assert'
+import test from 'my-favorite-test-library'
+
+import functionality from './myFunctionality'
+
+test('It exports a function', function () {
+  assert.strictEqual(typeof functionality, 'function')
+})
+```
 
 You can see that I’ve taken “don’t write any logic without a failing test” seriously here! The function has neither been created nor exported. The test fails as expected.
 
@@ -60,7 +69,29 @@ Second, and most importantly, when you follow this rule your code will have the 
 
 Not only does it verify your code, but by writing the test first you are creating a road map for what you want your code to do! That road map, just like the writer’s outline mentioned before, lets you easily fill in the blanks.
 
-https://gist.github.com/JustinDFuller/24724c6fcef4d6f3ab83743a8b5b4a6e#file-test-js
+```js
+
+/* source code file "myFunction.js" */
+
+export default myFunction(callback) {
+  return callback(10) 
+}
+
+/* test file */
+
+import assert from 'assert'
+import test from 'my-favorite-test-library'
+
+import myFunction from './myFunction'
+
+test('My function calls my callback with 10', function () {
+  function callback(number) {
+    assert.equal(number, 10, 'Number was not called with 10.')
+  }
+  
+  myFunction(callback)
+})
+```
 
 This rule can be difficult to follow sometimes. In the code block above you should see that I returned callback but never tested the return value of myFunction. It’s very easy to forget to test something this small, and code coverage reporters don’t help you find it.
 
@@ -99,7 +130,24 @@ There are certain tests that you will write over and over. Your test runner has 
 
 Your favorite code editor will have support for snippets. It doesn’t matter if you use a full IDE or a simple editor like vim. You can easily make snippets.
 
-https://gist.github.com/JustinDFuller/288eef9d311631c06cc0e06be90a6315#file-snippets-js
+```json
+{
+  "Ava Test Snippet": {
+    "prefix": "ava",
+    "body": [
+      "import test from 'ava'",
+      "",
+      "import ${1} from '${2}'",
+      "",
+      "test('It exports a function', function (t) {",
+      "  t.is(typeof ${3}, 'function')",
+      "})",
+      ""
+      ],
+    "description": "Ava Test Snippet"
+  }
+}
+```
 
 I prefer to use Ava for my tests. The above snippet creates an entire basic test whenever I start a new test file using Visual Studio Code. You can see that `${1}` is included for the variable parts of the snippet. VScode allows me to tab through these, which I can usually do in a few seconds, and I have my first test ready!
 
@@ -113,7 +161,18 @@ It’s very common to use a library like [sinon](http://sinonjs.org) or [proxyqu
 
 I’ve stopped using these libraries because I believe there is a better way! Instead you can construct your modules to accept an interface of dependencies. Here’s what it looks like:
 
-https://gist.github.com/JustinDFuller/18e1516cc0fe6b2e0c5b9535966b7bb0#file-dependencies-js
+```js
+/**
+ * Normally you might do:
+ * import fs from 'fs-extra-promise'
+ * but here we will allow the user of this file to provide the fs module
+ */
+export default function ({ fs }) {
+  return function(fileName) {
+    return fs.readFileAsync(fileName, 'utf8') 
+  }
+}
+```
 
 Now you don’t need proxyquire or sinon or anything to change what the fs module does! You can provide that directly from your tests. So you don’t have to learn the sinon or proxyquire API, you don’t have to remember to call `restore()` on stubbed functions. Your tests are now simpler and easier and you can continue to write code faster than ever!
 
