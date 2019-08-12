@@ -54,7 +54,32 @@ Hopefully, you see where I am going with this. Some refactoring stands on its ow
 
 Take a look at the following example.
 
-https://gist.github.com/JustinDFuller/922e73aa725be331abdda7ff1ac6982b#file-extensible-js
+```js
+// not extensible
+
+function getUser() {
+  return {
+    name: 'Justin',
+    email: 'justinfuller@email.com'
+  }
+}
+
+// Extensible
+
+class User {
+  constructor(options = {}) {
+    this.userData = options
+  }
+  
+  get() {
+    return this.userData
+  }
+  
+  set(key, value) {
+    this.userData[key] = value
+  }
+}
+```
 
 Which do you prefer? Which do you naturally tend to write first? Of course, the User class is far more extensible because it can handle more than just name and email. It can also be extended by a child class, maybe a SuperUser, that will have many more methods but still uses the classic `get()` and `set()` methods.
 
