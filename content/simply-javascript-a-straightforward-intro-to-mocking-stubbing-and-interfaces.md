@@ -26,7 +26,58 @@ Historically I would have used a library like [Proxyquire](https://www.npmjs.com
 
 As an example, let’s pretend you have a module called “a”. Let’s also say that module “a” imports module “b”. Proxyquire works by importing module “a” and overwriting the exports of module “b”. It won’t affect other imports of module “b” elsewhere. Sinon works by mutating the exports of module “b”. It will affect every place that imports module “b”, so you must remember to restore it when you are done.
 
-https://gist.github.com/JustinDFuller/1a69d16489b2665a56f5efa7a4f3bc65#file-mocking-js
+```js
+/* This is my file I'll be testing foo.js */
+
+import fs from 'fs'
+import { promisify } from 'util'
+
+const readFileAsync = promisify(fs.readFile)
+
+export function readJsonFile (filePath) {
+ return readFileAsync(filePath).then(JSON.parse)
+}
+
+/* This is my test file foo.test.js */
+
+import fs from 'fs'
+import test from 'ava';
+import { stub } from 'sinon'
+import proxyquire from 'proxyquire'
+
+test('readJsonFile with proxyquire', async function (t) {
+  t.plan(2)
+  
+  /* fs.readFile is overwritten for this import of foo.js */
+  const { readJsonFile } = proxyquire('./foo.js', {
+    fs: {
+      readFile(filePath, callback) {
+        t.is(filePath, 'myTestFile')
+        
+        return callback(null, '{ success: true }')
+      }
+    }
+  })
+  
+  const results = await readJsonFile('myTestFile')
+  t.deepEqual(results, { success: true })
+})
+
+test('readJsonFile with sinon', async function (t) {
+  t.plan(1)
+  
+  /* fs.readFile is overwritten everywhere */
+  const fsStub = stub(fs, 'readFile')
+    .withArgs('myTestFile')
+    .callsArg(2, null, '{ success: true }')
+  
+  const results = await readJsonFile('myTestFile')
+  t.deepEqual(results, { success: true })
+  
+  // Won't happen if test fails :(
+  fsStub.restore()
+})
+```
 
 ### Why are stubs bad?
 
@@ -40,7 +91,38 @@ There’s also the nuisance of lock-in. Both sinon and proxyquire will require y
 
 To solve this problem I followed a principle called [Dependency Inversion](https://en.wikipedia.org/wiki/Dependency_inversion_principle). Instead of my module creating its dependencies, it will expect to be given its dependencies. This produces modules that are both easier to test and more flexible. They can also be made to work with many implementations of the same dependencies.
 
-https://gist.github.com/JustinDFuller/ad6218cac91c543d9de50d30cd57340f#file-dependencies-js
+```js
+/* This is my file I'll be testing foo.js */
+
+export default function ({ readFileAsync }) {
+  return {
+    readJsonFile (filePath) {
+     return readFileAsync(filePath).then(JSON.parse)
+    }
+  }
+}
+
+/* This is my test file foo.test.js */
+
+import test from 'ava'
+
+import foo from './foo'
+
+test('foo with dependency inversion', function (t) {
+  t.plan(2)
+  
+  const dependencies = {
+    readFileAsync(filePath) {
+      t.is(filePath, 'bar')
+      
+      return Promise.resolve('{ success: true '})
+    }
+  }
+  
+  const result = await foo(dependencies).readJsonFile('bar')
+  t.deepEqual(result, { success: true })
+})
+```
 
 Not only have precious lines been saved in our code, but there is also no more worrisome mutation happening! The module will now accept readFileAsync rather than creating that function itself. The module is better because it’s more focused and has fewer responsibilities.
 
@@ -48,7 +130,48 @@ Not only have precious lines been saved in our code, but there is also no more w
 
 The dependencies have to be imported somewhere. In an application that follows dependency inversion, you should move the dependencies as far “out” as you can. Preferably you’d import them one time at the entry point of the application.
 
-https://gist.github.com/JustinDFuller/0aea46495d06912acacc1508c3ecbcfe#file-dependency-inversion-chain-js
+```js
+/* json.js */
+
+export default function ({ readFileAsync, writeFileAsync }) {
+  return {
+    readJsonFile(fileName) {
+      return readFileAsync(`${fileName}.json`).then(JSON.parse) 
+    },
+    writeJsonFile(filePath, fileContent) {
+      return writeFileAsync(filePath, JSON.stringify(fileContent)) 
+    }
+  }
+}
+
+/* content.js */
+
+export default function ({ readJsonFile, writeJsonFile }) {
+  return {
+     getContent(contentName) {
+      // business logic goes here.
+      return readJsonFile(contentName)
+     },
+     writeContent(contentName, contentText) {
+      // business logic goes here
+      return writeJsonFile(contentName, contentText) 
+     }
+  }
+}
+
+/* index.js where the app starts */
+
+import fs from 'fs-extra-promise'
+import jsonInterface from './json'
+import contentInterface from './content'
+
+const json = jsonInterface(fs)
+const content = contentInterface(json)
+
+// content can be used by an http server
+// or just exported if this is a library
+export default content
+```
 
 In the example, you saw that the dependencies were moved to the entry point of the application. Everything except index.js accepted an interface. This causes the application to be flexible, easy to change, and easy to test.
 
@@ -62,8 +185,22 @@ When your module accepts an interface, you can use that module with multiple imp
 
 A common interface you might know is the React component interface. In TypeScript it might look like this:
 
-https://gist.github.com/JustinDFuller/9aae67d963c92babfccd9aec5f1469c8#file-react-component-d-ts
-
+```js
+interface ComponentLifecycle {
+      constructor(props: Object);
+      componentDidMount?(): void;
+      shouldComponentUpdate?(nextProps: Object, nextState: Object, nextContext: any): boolean;
+      componentWillUnmount?(): void;
+      componentDidCatch?(error: Error, errorInfo: ErrorInfo): void;
+      setState(
+          state: ((prevState: Object, props: Object) => Object,
+          callback?: () => void
+      ): void;
+      render(): Object | null;
+      state: Object;
+  }
+```
+    
 Please don’t despair if you didn’t understand everything in that interface. The point is that a React Component has a predictable set of methods and properties that can be used to make many different components.
 
 We are now beginning to venture into the territory of the [Open-Closed Principle](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle). It states that our software should be open for extension but closed for modification. This may sound very familiar to you if you’ve been building software with frameworks like [Angular](https://angularjs.org/), or [React](https://reactjs.org/). They provide a common interface that you extend to build your software.
