@@ -41,7 +41,8 @@ Each file imports its dependencies, so you may find yourself following links fro
 
 * Finally you find that the database imported is actually a singleton that instantiated the connection the first time it was imported. It did this by importing a third party library.
 
-![Me after following that many levels of imports](https://cdn-images-1.medium.com/max/2000/0*gSyOcZNAgLwA9DNm.gif)*Me after following that many levels of imports*
+![Me after following that many levels of imports](https://cdn-images-1.medium.com/max/2000/0*gSyOcZNAgLwA9DNm.gif)
+*Me after following that many levels of imports*
 
 ## Another Way
 
@@ -55,7 +56,25 @@ Let’s look at the database example again, but this time with a hint of composi
 
 First you instantiate the database connection. Then you hand that database connection to the models. Next those models are handed to the server. Finally the server uses them in the routes. Your index or main function simply sets off this chain of events. Maybe it could look something like this:
 
-<iframe src="https://medium.com/media/ca386cd9d6b075996d0725d4cafc2d84" frameborder=0></iframe>
+```js
+import config from './config';
+import Database from './Database';
+import Models from './Models';
+import Server from './Server';
+
+function startApplication() {
+  const env = config();
+  const dbConnection = Database(env);
+  const models = Models(env, dbConnection);
+  const app = Server(env, models);
+  return app;
+}
+startApplication();
+
+// or
+
+export default startApplication;
+```
 
 You can see everything that takes place and where it happens. It all happens right here at the entry to the app! You know exactly where each part of the application is started.
 
@@ -71,13 +90,38 @@ Wouldn’t it be nice if each function could access the results of all the previ
 
 The code snippet below shows a simple reducer that merges objects and freezes them. It accounts for async functions, too. You can simply return an object containing any properties that you want to make available to each of the following functions.
 
-<iframe src="https://medium.com/media/dea1855b7dc3f76476bee18d7fe2e7ab" frameborder=0></iframe>
+```js
+import Promise from 'bluebird'; // For environments without Promises.
+import { compose, reverse } from 'lodash/fp'; // Or any functional utility library
+
+const mergeFreeze = compose(
+  Object.freeze,
+  Object.assign,
+);
+
+const reducer = (sum, fn) => Promise.resolve(fn(sum)).then(res => mergeFreeze({}, sum, res));
+
+const reduceAndMerge = functions => Promise.reduce(reverse(functions), reducer, {});
+
+export default reduceAndMerge;
+```
 
 Fantastic! The function above will be our tool to make this all work. But… how exactly does it work? I’m glad you asked!
 
 You simply give reduceAndMerge a list of functions like this:
 
-<iframe src="https://medium.com/media/fcbd7c26318446288332ed6ceaa0b625" frameborder=0></iframe>
+```js
+import reduceAndMerge from './reduceAndMerge';
+
+reduceAndMerge(
+  initializeServer, // Start the server listening.
+  createRoutes, // Create an array or object of routes.
+  createModels, // Create models that are available to the routes.
+  initializeDbConnection, // Connect to the DB
+  initializeLogger, // Start a generic logger for the app to use.
+  initializeConfig, // Set config defaults and import process.env
+);
+```
 
 Pretty cool, eh? You use it just like any compose function. Each function is invoked (from right to left, or bottom to top). The result of each function is passed to the next function.
 
@@ -95,7 +139,11 @@ Think about your app for a moment. What do you find yourself constantly importin
 
 Alright, you want an example. I’ve got it covered. Let’s look at the logger function that I’ve alluded to a few times now.
 
-<iframe src="https://medium.com/media/7de4d6709b7be2e21a3c1eb155cb1bf3" frameborder=0></iframe>
+```js
+export default ({ dependencies }) => ({
+  log: dependencies.bunyan.createLogger({ name: 'compose-app' }),
+});
+```
 
 It’s extremely simple. From this point on, each function will receive an object that contains the log property.
 
@@ -105,7 +153,23 @@ But hold on! You see that I didn’t import Bunyan directly. This is a very impo
 
 Because we didn’t import our dependencies, this logger utility is extremely easy to test. Take a look!
 
-<iframe src="https://medium.com/media/697de17186b9965777c370a46238a6fe" frameborder=0></iframe>
+```js
+import test from 'ava';
+import logger from './logger';
+
+const bunyan = {
+  createLogger() {
+    return { 
+      test: 'test' 
+    };
+  },
+};
+
+test('It returns the result of bunyan.createLogger inside the log property', (t) => {
+  const res = logger({ dependencies: { bunyan } });
+  t.true(res.log.test === 'test'); // Make sure it returns the bunyan object inside the log property.
+});
+```
 
 No proxyquire or other stubbing function is required.
 
