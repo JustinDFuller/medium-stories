@@ -141,21 +141,100 @@ That’s much easier, right? Now that we see the usefulness of this feature, we 
 
 So lets write a test!
 
-https://gist.github.com/JustinDFuller/8f6488ea000e3f275fc12d8c584e7359#file-optional-chaining-test-js
+```js
+import test from 'ava';
+
+const valid = {
+  user: {
+    address: {
+      street: 'main street',
+    },
+  },
+};
+
+function getAddress(data) {
+  return data?.user?.address?.street;
+}
+
+test('Optional Chaining returns real values', (t) => {
+  const result = getAddress(valid);
+  t.is(result, 'main street');
+});
+```
 
 Now we see that optional chaining maintains the previous functionality of dot notation. Next, let’s add a test for the unhappy path.
 
-https://gist.github.com/JustinDFuller/372294bec44f3a1d28b011891a654db1#file-optional-chaining-test-js
+```js
+test('Optional chaining returns undefined for nullish properties.', (t) => {
+  t.is(getAddress(), undefined);
+  t.is(getAddress(null), undefined);
+  t.is(getAddress({}), undefined);
+});
+```
 
 Here’s how optional chaining works for array property access:
 
-https://gist.github.com/JustinDFuller/19b069274a08921f6a2c588e6d6ee14f#file-optional-chaining-test-js
+```js
+const valid = {
+  user: {
+    address: {
+      street: 'main street',
+      neighbors: [
+        'john doe',
+        'jane doe',
+      ],
+    },
+  },
+};
+
+function getNeighbor(data, number) {
+  return data?.user?.address?.neighbors?.[number];
+}
+
+test('Optional chaining works for array properties', (t) => {
+  t.is(getNeighbor(valid, 0), 'john doe');
+});
+
+test('Optional chaining returns undefined for invalid array properties', (t) => {
+  t.is(getNeighbor({}, 0), undefined);
+});
+```
 
 Sometimes we don’t know if a function is implemented inside an Object.
 
 A common example of this is when you are using a web browser. Some older browsers may not have certain functions. Thankfully we can use optional chaining to detect if a function is implemented!
 
-https://gist.github.com/JustinDFuller/9934d728b7e67b83f742de91e9bd9296#file-optional-chaining-test-js
+```js
+const data = {
+  user: {
+    address: {
+      street: 'main street',
+      neighbors: [
+        'john doe',
+        'jane doe',
+      ],
+    },
+    getNeighbors() {
+      return data.user.address.neighbors;
+    }
+  },
+};
+
+function getNeighbors(data) {
+  return data?.user?.getNeighbors?.();
+}
+  
+test('Optional chaining also works with functions', (t) => {
+  const neighbors = getNeighbors(data);
+  t.is(neighbors.length, 2);
+  t.is(neighbors[0], 'john doe');
+});
+
+test('Optional chaining returns undefined if a function does not exist', (t) => {
+  const neighbors = getNeighbors({});
+  t.is(neighbors, undefined);
+});
+```
 
 Expressions will not execute if the chain is not intact. Under the hood, the expressions is roughly transformed to this:
 
@@ -165,7 +244,20 @@ value == null ? undefined : value[some expression here];
 
 So nothing after the optional chain operator ? will be executed if the value is undefined or null. We can see that rule in action in the following test:
 
-https://gist.github.com/JustinDFuller/e90099ab5b17a66ba61d697bdf331263#file-optional-chaining-test-js
+```js
+let neighborCount = 0;
+
+function getNextNeighbor(neighbors) {
+  return neighbors?.[++neighborCount];
+}
+  
+test('It short circuits expressions', (t) => {
+  const neighbors = getNeighbors(data);
+  t.is(getNextNeighbor(neighbors), 'jane doe');
+  t.is(getNextNeighbor(undefined), undefined);
+  t.is(neighborCount, 1);
+});
+```
 
 And there you have it! Optional chaining reduces the need for if statements, imported libraries like lodash, and the need for chaining with `&&`.
 
@@ -222,7 +314,33 @@ This protects us from accidentally defaulting those falsy values, but still catc
 
 Now that we see the syntax, we can write a simple test to validate how it works.
 
-https://gist.github.com/JustinDFuller/b8e0ee9b53d2ea9d4e04f71875c385a1#file-nullish-coalescing-test-js
+```js
+import test from 'ava';
+
+test('Nullish coalescing defaults null', (t) => {
+  t.is(null ?? 'default', 'default');
+});
+
+test('Nullish coalescing defaults undefined', (t) => {
+  t.is(undefined ?? 'default', 'default');
+});
+
+test('Nullish coalescing defaults void 0', (t) => {
+  t.is(void 0 ?? 'default', 'default');
+});
+
+test('Nullish coalescing does not default 0', (t) => {
+  t.is(0 ?? 'default', 0);
+});
+
+test('Nullish coalescing does not default empty strings', (t) => {
+  t.is('' ?? 'default', '');
+});
+
+test('Nullish coalescing does not default false', (t) => {
+  t.is(false ?? 'default', false);
+});
+```
 
 You can see in the tests that it uses default values for `null`, `undefined`, and `void 0` (which evaluates to undefined). It does not default falsy values like `0`, `''`, and `false`. Check it out on GitHub [here](https://github.com/tc39/proposal-nullish-coalescing).
 
@@ -276,7 +394,47 @@ result //=> 0
 
 Now that we see the syntax we can begin writing tests!
 
-https://gist.github.com/JustinDFuller/475f9772914bfd866da5bc854641f8f9#file-pipeline-operator-test-js
+```js
+import test from 'ava';
+
+function doubleSay (str) {
+  return str + ", " + str;
+}
+
+function capitalize (str) {
+  return str[0].toUpperCase() + str.substring(1);
+}
+
+function exclaim (str) {
+  return str + '!';
+}
+
+test('Simple pipeline usage', (t) => {
+  let result = "hello"
+    |> doubleSay
+    |> capitalize
+    |> exclaim;
+
+  t.is(result, 'Hello, hello!');
+});
+
+test('Partial application pipeline', (t) => {
+  let result = -5
+    |> (_ => Math.max(0, _));
+
+  t.is(result, 0);
+});
+
+test('Async pipeline', async (t) => {
+  const asyncAdd = (number) => Promise.resolve(number + 5);
+  const subtractOne = (num1) => num1 - 1;
+  const result = 10
+    |> asyncAdd
+    |> (async (num) => subtractOne(await num));
+  
+  t.is(await result, 14);
+});
+```
 
 One thing you may notice is that you must await the value once an async function is added to the pipeline. This is because the value has become a Promise. There are a few [proposed changes](https://github.com/tc39/proposal-pipeline-operator) to support `|> await asyncFunction`, but none have been implemented or decided on yet.
 
