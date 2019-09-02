@@ -96,7 +96,20 @@ hasEntitlement() {
 }
 ```
 
-This allows us to use polymorphism to extend, rather than change, the code for different use cases.
+Don't let the Class throw you off. The same result can be accomplished without it.
+
+```
+function superUser(user) {
+  return {
+    ...user,
+    hasEntitlement() {
+      return true
+    }
+  }
+}
+```
+
+Either way, this encapsulation of `hasEntitlement` allows the User to, for different use cases, take advantage of polymorphism to extend—rather than change—the code.
 
 Still, that User class may be complete overkill, and now your code is more complicated than it will ever need to be.
 
