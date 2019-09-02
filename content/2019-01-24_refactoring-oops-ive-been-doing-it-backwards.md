@@ -62,32 +62,45 @@ Take a look at the following example.
 function getUser() {
   return {
     name: 'Justin',
-    email: 'justinfuller@email.com'
+    email: 'justinfuller@email.com',
+    entitlements: ['global', 'feature_specific']
   }
 }
+
+// used later
+
+getUser().entitlements.includes['feature_specific']
 
 // Extensible
 
 class User {
-  constructor(options = {}) {
-    this.userData = options
+  constructor() {
+    // initialize here
   }
   
-  get() {
-    return this.userData
+  hasEntitlement(expectedEntitlement) {
+    return this.entitlements.includes(expectedEntitlement)
   }
-  
-  set(key, value) {
-    this.userData[key] = value
-  }
+}
+
+// used later
+
+new User().hasEntitlement('feature_specific')
+```
+
+Which do you prefer? Which do you naturally tend to write first? Of course, the User class is far more extensible because it can be overriden by another class. For example, if you had a `SuperUser` then you could implement `hasEntitlement` like this:
+
+```js
+hasEntitlement() {
+  return true
 }
 ```
 
-Which do you prefer? Which do you naturally tend to write first? Of course, the User class is far more extensible because it can handle more than just name and email. It can also be extended by a child class, maybe a SuperUser, that will have many more methods but still uses the classic `get()` and `set()` methods.
+This allows us to use polymorphism to extend, rather than change, the code for different use cases.
 
 Still, that User class may be complete overkill, and now your code is more complicated than it will ever need to be.
 
-My advice is to stick with the simplest possible pattern.
+My advice is to stick with the simplest possible pattern until you have a reason for something more complex. In the above solution, you may choose to stick with the same simple User data object until you have multiple user types.
 
 ## Order Of Complexity
 
