@@ -202,12 +202,12 @@ suite.addTest({
     try {
       new UserInvitation().validate()
     } catch (e) {
-      error = e.constructor // The constructor (type) of the error is being captured
+      error = e
     }
     
     t.equal({
       expected: UserInvitationValidationError,
-      actual: error
+      actual: error.constructor // The constructor (type) of the error is being tested
     })
   }
 })
