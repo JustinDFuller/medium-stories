@@ -1,6 +1,6 @@
 # A Pattern For Testing Strings
 
-In my most recent project, I set out to create a [Javascript testing library](https://github.com/JustinDFuller/javascript-testing-library) that solves the common issues that I face while writing unit tests.
+In my most recent project, I set out to create a [Javascript testing library](https://github.com/JustinDFuller/javascript-testing-library) with plans for it to solve many of the common issues I faced while writing unit tests.
 
 I quickly realized that the unit tests for this library were presented with a challenge that I've seen in many of the production applications that I've built. That is, testing string outputs. 
 
