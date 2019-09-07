@@ -321,4 +321,23 @@ suite.addTest({
 })
 ```
 
-These tests render a `<Welcome />` component for the different user types. They expect that the text comes from the greeting property. The benefit of testing this way is that the greeting can be changed without affecting the tests. If the wrong greeting is given, that will be caught. If the greeting is missing, that will be caught. So, the test still verifies functionality, with the added benefit of not caring about the actual text value.
+These tests render a `<Welcome />` component for the different user types. They expect that the text comes from the greeting property. 
+
+The benefit of testing this way is that the greeting can be changed without affecting the tests. If the wrong greeting is given, that will be caught. If the greeting is missing, that will be caught. So, the test still verifies functionality, with the added benefit of not caring about the actual text value.
+
+_Side note_:
+
+The tests use [String.prototype.includes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes) to determine if the `welcome.text()` includes the expected user greeting. I did this because I decided that I don't really care if the welcome message only contains the user greeting, I just care that it does contain the user greeting.
+
+This is an important part of how tests are written. Sometimes tests might accidentally tests things that they don't intent to. If I didn't use `includes` I would have accidentally tested that the Welcome message is only the user greeting—which is clearly not my intention.
+
+## Dynamic Strings
+
+Testing static strings is pretty easy. Writing a test for a string that changes based on input are more difficult. Why is it difficult? 
+
+Let's look at an example: The UX team has determined that instead of `Welcome back.` the user should see `Welcome back, Justin.` (or whatever the user's name is). 
+
+There are a few things to consider:
+* The test shouldn't have a duplicate string.
+* The test shouldn't change just because the text changes.
+* The test shouldn't know much about the internals of the `User` class. 
