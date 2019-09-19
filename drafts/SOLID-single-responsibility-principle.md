@@ -107,8 +107,63 @@ __Metrics for detecting SRP violations in functions:__
 Moving up another unit of complexity brings us to classes, objects, and modules. At this level the Single Responsibility Principle can become more
 nuanced and harder to detect. Thankfully, there are still plenty of clear indicators that the SRP is being violated.
 
-First, you may wonder why I have grouped these three concepts together. It's because they are used to group concepts together—at lest, when
+First, you may wonder why I have grouped these three concepts together. It's because they are used to group concepts together—at least, when
 they are used correctly.
 
-A class, object, or module should contain a group of methods and variables that belong to a specific set of functionality. The SRP states that
-there should 
+A class, object, or module should contain a group of methods and properties that belong to a specific set of functionality. The SRP states that
+there should be a single, cohesive purpose to everything in the class, but what does that mean? Clearly, not everything method and property can have the exact same purpose—that would be pointless. 
+
+To establish what "single responsibility" means, another set of principles can be borrowed from. These principles are aimed at packages but the ideas can also be usefully applied to a single Class within a package. 
+
+First, there is the __Common-Reuse Principle__. This principle states that things that are used together should be grouped together and, conversely, things that are not used together should not be grouped together. Notice that I am using the ambigious, "things". I use this vague word because it can be applied to a class, module, or package.
+
+What does this look like in class form?
+
+```typescript
+class User {
+  // User Creation Methods
+  private validate() {},
+  create() {},
+  // security methods
+  hasEntitlement(entitlement) {},
+  // User Display Methods
+  private getLastLogin() {},
+  getWelcomeMessage() {},
+}
+```
+
+This trivial example shows a User class that is used in two completely different scenarios. In the first scenario the User is used during the registration process to validate and create a new user. In the second scenario the class is used to display a welcome message. These two sets of methods and related properties are never used at the same time. Therefor, the Common-Reuse Principle states that this class may benefit from becoming two classes.
+
+What benefits could come from splitting up a class or module? 
+
+At a basic level, the class should become easier to understand. By doing less, there will be less code for a developer to wade through as they seek to understand where to make a change.
+
+Next, the class or module becomes easier to use. For example, suppose the User class needs to have a data store injected for the `create()` method. The display methods to not need a store injected. It could be instantiated from a simple User data object. When the above code is only one class you must inject an unecessary dependency. Once it's split up there is less overhead.
+
+Having less overhead frees the class up for reuse. 
+
+```typescript
+interface EmtitlementChecker {
+  hasEntitlement(entitlement): bool
+}
+
+class UserEntitlementChecker {
+  hasEntitlements(entitlement) {
+    return this.user.entitlements.includes(entitlement)
+  }
+}
+
+class SuperuserEntitlementChecker {
+  hasEntitlements(entitlement) {
+    return true
+  }
+}
+
+class BanneduserEntitlementChecker {
+  hasEntitlements(entitlement) {
+    return false
+  }
+}
+```
+
+Before the class was split up, this polymorphism would have been cumbursome. We would be overriding one method while being forced to inherit from some other base class. 
