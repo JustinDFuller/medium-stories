@@ -144,26 +144,28 @@ Having less overhead frees the class up for reuse.
 
 ```typescript
 interface EmtitlementChecker {
-  hasEntitlement(entitlement): bool
+  hasEntitlement(entitlement: string): boolean
 }
 
-class UserEntitlementChecker {
-  hasEntitlements(entitlement) {
+class UserEntitlementChecker implements EmtitlementChecker {
+  hasEntitlements(entitlement: string): boolean {
     return this.user.entitlements.includes(entitlement)
   }
 }
 
-class SuperuserEntitlementChecker {
-  hasEntitlements(entitlement) {
+class SuperuserEntitlementChecker implements EmtitlementChecker {
+  hasEntitlements(entitlement: string): boolean {
     return true
   }
 }
 
-class BanneduserEntitlementChecker {
-  hasEntitlements(entitlement) {
+class BanneduserEntitlementChecker implements EmtitlementChecker {
+  hasEntitlements(entitlement: string): boolean {
     return false
   }
 }
 ```
+
+_Note:_ Examples like this always fall short, since the example has to be small to create a reasonably sized post, the example is almost always to small to really be worth the effort. You'll just have to imagine the example as part of a larger application.
 
 Before the class was split up, this polymorphism would have been cumbursome. We would be overriding one method while being forced to inherit from some other base class. 
