@@ -1,11 +1,37 @@
 # SOLID — The Single Responsibility Principle
 
-The SOLID series will be setting out to explore a set of principles, often attributed to statically typed–object oriented programming languages, and their
-application to the JavaScript programming language. This series will use Typescript in order to visualize the types involved, although Typescript is not
-necessary to apply these principles. 
+As I continue on the journey of learning programming, I have recently spent a lot of time learning about Object Oriented Programming principles. Probably the most well known set of principles are the SOLID principles. These principles were popularized by [Robert C. Martin](https://en.wikipedia.org/wiki/Robert_C._Martin) through books like [Clean  Code](https://amzn.to/31GmPO3) and [Clean Architecture](https://amzn.to/2Nur1g3). 
 
-First up in this series in the Single Responsibility Principle. This, being the first SOLID "S" principle, as well as the most well-known principle, is probably
-the most misunderstood principle. At least, it was for me.
+Most recently I have been reading his book, [Agile Software Development, Principles, Patterns, and Practices](https://amzn.to/31H3Lz6) which dives deeply into SOLID and Object Oriented Programming in C++ and Java. I highly recommend all three books and I'll be sharing what I learned in this series.
+
+The [SOLID](https://en.wikipedia.org/wiki/SOLID) principles are intended to assist a developer in writing code that is easy to change. The idea is that software provides two values:
+
+1. What the software can do today.
+2. What the software can do tomorrow.
+
+This can also be thought of as short-term and long-term value. The short-term value is the features the software can do today. The long term value is what the software can be made to do when the changes roll in.
+
+Too often, we as developers, managers, product owners, etc., focus on the short-term value at the expense of the long-term. We incur technical debt and make our programs difficult to change. This is why you often see programs being re-written every few years. The software isn't soft, it's hard. It can't be changed easily. So we have to create a completely new version to be able to continue making the changes necessitated by the business.
+
+## Why "easy to change"?
+
+The distinction of this goal is important. Some people have different goals for software. They want it to be beautiful. They want it to be concise. They want it to be blazing fast. 
+
+These are worthy goals, but who cares if your software is fast if it can't be made to do what the business needs tomorrow? No one will want to use your blazingly-fast-but-outdated-or-useless product.
+
+Change is the goal. Your software should be soft. That's where SOLID comes in.
+
+## Single Responsibility
+
+The "S" in SOLID stands for the __Single-Responsibility Principle__ (SRP). This principle states that a given piece of code should have one and only one responsibility.
+
+What is responsibility?
+
+Responsibility can be many things, as will be shown throughout this post. It can be the data it operates on, the type of operation or operations, or even the number of operations.
+
+Responsibility can also flow the other way. Not what is the code responsible for, but instead, who is responsible for the code? Does the code serve the User Interface and the team that designs it? Does the code support business rules and the business partners who supply them? Does the code support the database or devops team who provide the databases or other storage solutions?
+
+To see in detail what this concept of responibility looks like, it would be best to look at the Single-Responsibility Principle in action. The next sections will demonstrate the SRP, starting at the lowest level, a single variable, then working up to more complex topics.
 
 ## Variables
 
@@ -115,6 +141,8 @@ there should be a single, cohesive purpose to everything in the class, but what 
 
 To establish what "single responsibility" means, another set of principles can be borrowed from. These principles are aimed at packages but the ideas can also be usefully applied to a single Class within a package. 
 
+### Common-Reuse Principle
+
 The first package principle is the __Common-Reuse Principle__. This principle states that things that are used together should be grouped together and, conversely, things that are not used together should not be grouped together. Notice that I am using the ambigious, "things". I use this vague word because I intent to apply this principle to classes, modules, and packages.
 
 What does this look like in class form?
@@ -148,7 +176,7 @@ Next, the class or module becomes easier to use.
 
 For example, suppose the `User` class needs to have a data store injected for the `create()` method. On the other hand, the display methods do not need a store injected. The display methods only need a simple `User` data object. When the above code is only one class you must inject an unecessary dependency. Once it's split up there is less overhead.
 
-Having less overhead frees the class up for reuse. 
+The class has less overhead, so it is easier to work with. 
 
 ```typescript
 interface EntitlementChecker {
@@ -178,4 +206,43 @@ _Note:_ Examples like this always fall short, since the example has to be small 
 
 Before the class was split up, this polymorphism would have been cumbursome. We would be overriding one method while being forced to inherit from some other base class and we would have been forced to inject a dependency for the creation methods. Now, the polymorphism is easy to accomplish because the class is focused.
 
+How could this structure have been implemented before? What if A `SuperUser` could have multiple display implementations? Polymorphism would no longer be an options. Instead you would likely be forced to use if-else statements to determine which logic to use.
 
+### Common-Closure Principle
+
+The next package principle is the __Common-Closure Principle__. This principle states that a package should only have one reason to change and packages that change together, should stay together.
+
+Applying this principle to classes, objects, and modules tells us that we should group our properties and methods based on how and why they change.
+
+Assume the `User` class (that was shown above) has been split up into multiple, focused classes. Now there is a `UserCreator` class that only implements methods related to the creation of a new user.
+
+```typescript
+class UserCreator {
+  private validateEmail(email: string): boolean {}
+  
+  private encryptPassword(password: string): Promise<string> {}
+  
+  private insertIntoDatabase(options): Promise<void> {}
+  
+  private getWelcomeMessage(error: Error): string {}
+  
+  private getRegistrationFailureMessage(): string {}
+  
+  create(options):  {
+    try {
+      this.validateEmail(options.email)
+      const encryptedPassword = await this.encryptPassword(options.password)
+      await this.insertIntoDatabase({
+        name: options.name,
+        email: options.email,
+        password: encryptedPassword
+      })
+      return this.getWelcomeMessage()
+    } catch (e) {
+      return this.getRegistrationFailureMessage(e)
+    }
+  }
+}
+```
+
+I leave the implementation of the private methods to your imagination. The point to focus is not necessarily on what each function does, but instead on why each method might change.
