@@ -230,7 +230,7 @@ class UserCreator {
   
   private getRegistrationFailureMessage(): string {}
   
-  create(options):  {
+  create(options): string {
     try {
       this.validateEmail(options.email)
       const encryptedPassword = await this.encryptPassword(options.password)
