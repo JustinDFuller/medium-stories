@@ -176,7 +176,7 @@ Next, the class or module becomes easier to use.
 
 For example, suppose the `User` class needs to have a data store injected for the `create()` method. On the other hand, the display methods do not need a store injected. The display methods only need a simple `User` data object. When the above code is only one class you must inject an unecessary dependency. Once it's split up there is less overhead.
 
-The class has less overhead, so it is easier to work with. 
+By splitting up the class, giving it less responsibility, it is now open for extension. The following examples shows how an extendable `EntitlementChecker` can now be implemented.
 
 ```typescript
 interface EntitlementChecker {
@@ -204,17 +204,19 @@ class BanneduserEntitlementChecker implements EntitlementChecker {
 
 _Note:_ Examples like this always fall short, since the example has to be small to create a reasonably sized post, the example is almost always to small to really be worth the effort. You'll just have to imagine the example as part of a larger application.
 
-Before the class was split up, this polymorphism would have been cumbursome. We would be overriding one method while being forced to inherit from some other base class and we would have been forced to inject a dependency for the creation methods. Now, the polymorphism is easy to accomplish because the class is focused.
+Before the class was split up, this polymorphism would have been cumbursome. Each implementation would be overriding one method while being forced to inherit from the `User` base class. It may have been forced to unecessarily inject a dependency for the creation methods. 
 
-How could this structure have been implemented before? What if A `SuperUser` could have multiple display implementations? Polymorphism would no longer be an options. Instead you would likely be forced to use if-else statements to determine which logic to use.
+Now, the polymorphism is easy to accomplish because the class is focused.
+
+How could this structure have been implemented before? What if A `SuperUser` could have multiple display implementations? Polymorphism would no longer be an option. Instead the class would likely be forced to use if-else statements to determine which logic to use.
 
 ### Common-Closure Principle
 
-The next package principle is the __Common-Closure Principle__. This principle states that a package should only have one reason to change and packages that change together, should stay together.
+The next package principle is the __Common-Closure Principle__. This principle states that a package should only have one reason to change. Code that changes together should stay together.
 
-Applying this principle to classes, objects, and modules tells us that we should group our properties and methods based on how and why they change.
+Applying this principle to classes, objects, and modules suggests that properties and methods should be grouped based on how and why they change.
 
-Assume the `User` class (that was shown above) has been split up into multiple, focused classes. Now there is a `UserCreator` class that only implements methods related to the creation of a new user.
+Assume the `User` class has been split up into multiple, focused classes. Now there is a `UserCreator` class that only implements methods related to the creation of a new user.
 
 ```typescript
 class UserCreator {
@@ -245,4 +247,6 @@ class UserCreator {
 }
 ```
 
-I leave the implementation of the private methods to your imagination. The point to focus is not necessarily on what each function does, but instead on why each method might change.
+The implementation of the private methods can be left to the imagination. 
+
+The point to focus is not necessarily on what each function does, but instead on why each method might change.
