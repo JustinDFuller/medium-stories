@@ -1,6 +1,6 @@
 # SOLID — The Single Responsibility Principle
 
-As I continue on the journey of learning programming, I have recently spent a lot of time learning about Object Oriented Programming principles. Probably the most well known set of principles are the SOLID principles. These principles were popularized by [Robert C. Martin](https://en.wikipedia.org/wiki/Robert_C._Martin) through books like [Clean  Code](https://amzn.to/31GmPO3) and [Clean Architecture](https://amzn.to/2Nur1g3). 
+As I continue on the journey of learning programming, I recently spent a lot of time learning about Object Oriented Programming principles. Probably the most well known set of principles are the SOLID principles. These principles were popularized by [Robert C. Martin](https://en.wikipedia.org/wiki/Robert_C._Martin) through books like [Clean  Code](https://amzn.to/31GmPO3) and [Clean Architecture](https://amzn.to/2Nur1g3). 
 
 Most recently I have been reading his book, [Agile Software Development, Principles, Patterns, and Practices](https://amzn.to/31H3Lz6) which dives deeply into SOLID and Object Oriented Programming in C++ and Java. I highly recommend all three books and I'll be sharing what I learned in this series.
 
@@ -212,7 +212,7 @@ How could this structure have been implemented before? What if A `SuperUser` cou
 
 ### Common-Closure Principle
 
-The next package principle is the __Common-Closure Principle__. This principle states that a package should only have one reason to change. Code that changes together should stay together.
+The next package principle is the __Common-Closure Principle__ (CCP). This principle states that a package should only have one reason to change. Code that changes together should stay together.
 
 Applying this principle to classes, objects, and modules suggests that properties and methods should be grouped based on how and why they change.
 
@@ -247,6 +247,10 @@ class UserCreator {
 }
 ```
 
-The implementation of the private methods can be left to the imagination. 
+I've left the private methods empty because I want us to focus what might cause a change to each method.
 
-The point to focus is not necessarily on what each function does, but instead on why each method might change.
+First, the `getWelcomeMessage` and `getRegistrationFailureMessage` methods return strings that are likely the responsible of the design team. Next, the `insertIntoDatabase` method could change if the database model is changed or if we switch to a different database. `encryptPassword` might change if a better encryption algorithm becomes available. Finally, `validateEmail` could change due to a bug in email validation, but more interestingly it could change because of a business decision.
+
+What kind of business decision would affect email validation? Imagine that at first you have loose validation on emails. If it follows the proper shape then it will be valid. The database will enforce unique emails, so `validateEmail` does not need to worry about that. Now, say the business is having problems with spam accounts. They discover that many accounts can be created with "email@gmail.com" by doing things like "email+1@gmail.com". Only one email is actually used, because gmail ignores the "+1" bit. Now, the business asks for stricter email validation. Emails will be stripped down so that any ignored characters can't be used to make a new account.
+
+Applying the Common-Closure Principle (CCP) to a class states that it should only have one reason to change. I have just listed four reasons, and just as many responsible teams, for this class to change. Could it be possible that it violates the CCP? If so, how can we fix it?
