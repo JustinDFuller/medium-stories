@@ -1,11 +1,37 @@
 # SOLID — The Single Responsibility Principle
 
-The SOLID series will be setting out to explore a set of principles, often attributed to statically typed–object oriented programming languages, and their
-application to the JavaScript programming language. This series will use Typescript in order to visualize the types involved, although Typescript is not
-necessary to apply these principles. 
+As I continue on the journey of learning programming, I recently spent a lot of time learning about Object Oriented Programming principles. Probably the most well known set of principles are the SOLID principles. These principles were popularized by [Robert C. Martin](https://en.wikipedia.org/wiki/Robert_C._Martin) through books like [Clean  Code](https://amzn.to/31GmPO3) and [Clean Architecture](https://amzn.to/2Nur1g3). 
 
-First up in this series in the Single Responsibility Principle. This, being the first SOLID "S" principle, as well as the most well-known principle, is probably
-the most misunderstood principle. At least, it was for me.
+Most recently I have been reading his book, [Agile Software Development, Principles, Patterns, and Practices](https://amzn.to/31H3Lz6) which dives deeply into SOLID and Object Oriented Programming in C++ and Java. I highly recommend all three books and I'll be sharing what I learned in this series.
+
+The [SOLID](https://en.wikipedia.org/wiki/SOLID) principles are intended to assist a developer in writing code that is easy to change. The idea is that software provides two values:
+
+1. What the software can do today.
+2. What the software can do tomorrow.
+
+This can also be thought of as short-term and long-term value. The short-term value is the features the software can do today. The long term value is what the software can be made to do when the changes roll in.
+
+Too often, we as developers, managers, product owners, etc., focus on the short-term value at the expense of the long-term. We incur technical debt and make our programs difficult to change. This is why you often see programs being re-written every few years. The software isn't soft, it's hard. It can't be changed easily. So we have to create a completely new version to be able to continue making the changes necessitated by the business.
+
+## Why "easy to change"?
+
+The distinction of this goal is important. Some people have different goals for software. They want it to be beautiful. They want it to be concise. They want it to be blazing fast. 
+
+These are worthy goals, but who cares if your software is fast if it can't be made to do what the business needs tomorrow? No one will want to use your blazingly-fast-but-outdated-or-useless product.
+
+Change is the goal. Your software should be soft. That's where SOLID comes in.
+
+## Single Responsibility
+
+The "S" in SOLID stands for the __Single-Responsibility Principle__ (SRP). This principle states that a given piece of code should have one and only one responsibility.
+
+What is responsibility?
+
+Responsibility can be many things, as will be shown throughout this post. It can be the data it operates on, the type of operation or operations, or even the number of operations.
+
+Responsibility can also flow the other way. Not what is the code responsible for, but instead, who is responsible for the code? Does the code serve the User Interface and the team that designs it? Does the code support business rules and the business partners who supply them? Does the code support the database or devops team who provide the databases or other storage solutions?
+
+To see in detail what this concept of responibility looks like, it would be best to look at the Single-Responsibility Principle in action. The next sections will demonstrate the SRP, starting at the lowest level, a single variable, then working up to more complex topics.
 
 ## Variables
 
@@ -107,8 +133,124 @@ __Metrics for detecting SRP violations in functions:__
 Moving up another unit of complexity brings us to classes, objects, and modules. At this level the Single Responsibility Principle can become more
 nuanced and harder to detect. Thankfully, there are still plenty of clear indicators that the SRP is being violated.
 
-First, you may wonder why I have grouped these three concepts together. It's because they are used to group concepts together—at lest, when
+First, you may wonder why I have grouped these three concepts together. It's because they are used to group concepts together—at least, when
 they are used correctly.
 
-A class, object, or module should contain a group of methods and variables that belong to a specific set of functionality. The SRP states that
-there should 
+A class, object, or module should contain a group of methods and properties that belong to a specific set of functionality. The SRP states that
+there should be a single, cohesive purpose to everything in the class, but what does that mean? Clearly, not every method and property can have the exact same purpose—that would be pointless. 
+
+To establish what "single responsibility" means, another set of principles can be borrowed from. These principles are aimed at packages but the ideas can also be usefully applied to a single Class within a package. 
+
+### Common-Reuse Principle
+
+The first package principle is the __Common-Reuse Principle__. This principle states that things that are used together should be grouped together and, conversely, things that are not used together should not be grouped together. Notice that I am using the ambigious, "things". I use this vague word because I intent to apply this principle to classes, modules, and packages.
+
+What does this look like in class form?
+
+```typescript
+class User {
+  // User Creation Methods
+  private validate() {},
+  create() {},
+  // security methods
+  hasEntitlement(entitlement) {},
+  // User Display Methods
+  private getLastLogin() {},
+  getWelcomeMessage() {},
+}
+```
+
+This trivial example shows a `User` class that implements three sets of functionality. 
+
+The first set of functionality is for the registration process. It validates and creates a new user. 
+
+In the second scenario, the class displays a welcome message. 
+
+These two sets of methods and related properties are never used at the same time. Therefor, the Common-Reuse Principle states that this class may benefit from becoming two classes.
+
+So, what benefits could come from splitting up a class or module? 
+
+At a basic level, the class should become easier to understand. By doing less, there will be less code for a developer to wade through as they seek to understand where to make a change.
+
+Next, the class or module becomes easier to use. 
+
+For example, suppose the `User` class needs to have a data store injected for the `create()` method. On the other hand, the display methods do not need a store injected. The display methods only need a simple `User` data object. When the above code is only one class you must inject an unecessary dependency. Once it's split up there is less overhead.
+
+By splitting up the class, giving it less responsibility, it is now open for extension. The following examples shows how an extendable `EntitlementChecker` can now be implemented.
+
+```typescript
+interface EntitlementChecker {
+  hasEntitlement(entitlement: string): boolean
+}
+
+class UserEntitlementChecker implements EntitlementChecker {
+  hasEntitlements(entitlement: string): boolean {
+    return this.entitlements.includes(entitlement)
+  }
+}
+
+class SuperuserEntitlementChecker implements EntitlementChecker {
+  hasEntitlements(): boolean {
+    return true
+  }
+}
+
+class BanneduserEntitlementChecker implements EntitlementChecker {
+  hasEntitlements(): boolean {
+    return false
+  }
+}
+```
+
+_Note:_ Examples like this always fall short, since the example has to be small to create a reasonably sized post, the example is almost always to small to really be worth the effort. You'll just have to imagine the example as part of a larger application.
+
+Before the class was split up, this polymorphism would have been cumbursome. Each implementation would be overriding one method while being forced to inherit from the `User` base class. It may have been forced to unecessarily inject a dependency for the creation methods. 
+
+Now, the polymorphism is easy to accomplish because the class is focused.
+
+How could this structure have been implemented before? What if A `SuperUser` could have multiple display implementations? Polymorphism would no longer be an option. Instead the class would likely be forced to use if-else statements to determine which logic to use.
+
+### Common-Closure Principle
+
+The next package principle is the __Common-Closure Principle__ (CCP). This principle states that a package should only have one reason to change. Code that changes together should stay together.
+
+Applying this principle to classes, objects, and modules suggests that properties and methods should be grouped based on how and why they change.
+
+Assume the `User` class has been split up into multiple, focused classes. Now there is a `UserCreator` class that only implements methods related to the creation of a new user.
+
+```typescript
+class UserCreator {
+  private validateEmail(email: string): boolean {}
+  
+  private encryptPassword(password: string): Promise<string> {}
+  
+  private insertIntoDatabase(options): Promise<void> {}
+  
+  private getWelcomeMessage(error: Error): string {}
+  
+  private getRegistrationFailureMessage(): string {}
+  
+  create(options): string {
+    try {
+      this.validateEmail(options.email)
+      const encryptedPassword = await this.encryptPassword(options.password)
+      await this.insertIntoDatabase({
+        name: options.name,
+        email: options.email,
+        password: encryptedPassword
+      })
+      return this.getWelcomeMessage()
+    } catch (e) {
+      return this.getRegistrationFailureMessage(e)
+    }
+  }
+}
+```
+
+I've left the private methods empty because I want us to focus what might cause a change to each method.
+
+First, the `getWelcomeMessage` and `getRegistrationFailureMessage` methods return strings that are likely the responsible of the design team. Next, the `insertIntoDatabase` method could change if the database model is changed or if we switch to a different database. `encryptPassword` might change if a better encryption algorithm becomes available. Finally, `validateEmail` could change due to a bug in email validation, but more interestingly it could change because of a business decision.
+
+What kind of business decision would affect email validation? Imagine that at first you have loose validation on emails. If it follows the proper shape then it will be valid. The database will enforce unique emails, so `validateEmail` does not need to worry about that. Now, say the business is having problems with spam accounts. They discover that many accounts can be created with "email@gmail.com" by doing things like "email+1@gmail.com". Only one email is actually used, because gmail ignores the "+1" bit. Now, the business asks for stricter email validation. Emails will be stripped down so that any ignored characters can't be used to make a new account.
+
+Applying the Common-Closure Principle (CCP) to a class states that it should only have one reason to change. I have just listed four reasons, and just as many responsible teams, for this class to change. Could it be possible that it violates the CCP? If so, how can we fix it?

@@ -1,2 +1,4 @@
-# medium-stories
-Just backing up my medium stories here.
+# Blog Posts
+
+* `/content` is automatically shown on my blog.
+* `/drafts` is for.. drafts.
