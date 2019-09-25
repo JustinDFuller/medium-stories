@@ -204,11 +204,17 @@ class BanneduserEntitlementChecker implements EntitlementChecker {
 
 _Note:_ Examples like this always fall short, since the example has to be small to create a reasonably sized post, the example is almost always to small to really be worth the effort. You'll just have to imagine the example as part of a larger application.
 
-Before the class was split up, this polymorphism would have been cumbursome. Each implementation would be overriding one method while being forced to inherit from the `User` base class. It may have been forced to unecessarily inject a dependency for the creation methods. 
+Here's what the class diagram looked like before it was split up.
 
-Now, the polymorphism is easy to accomplish because the class is focused.
+![User UML](https://raw.githubusercontent.com/JustinDFuller/blog-posts/master/media/SOLID-single-responsibility-principle/User.png)
 
-How could this structure have been implemented before? What if A `SuperUser` could have multiple display implementations? Polymorphism would no longer be an option. Instead the class would likely be forced to use if-else statements to determine which logic to use.
+This polymorphism would have been cumbursome before the split. Each implementation would be overriding one method while being forced to inherit from the `User` base class. It may have been forced to unecessarily inject a dependency for the creation methods. 
+
+![User with EntitlementChecker](https://raw.githubusercontent.com/JustinDFuller/blog-posts/master/media/SOLID-single-responsibility-principle/EntitlementCheckers.png)
+
+The diagram now shows that each type of entitlement checker gets a separate implementation. This polymorphism is easy to accomplish because the class is focused. Adding a new way of checking entitlements will be easy and changes to each entitlement implementation will be isolated from the other checkers. This makes future changes easier and safer.
+
+How could this structure have been implemented before the class was split up? What if A `SuperUser` could have multiple display implementations? Polymorphism would be very difficult to accomplish. Instead the class would likely be forced to use if-else statements to determine which logic to use.
 
 ### Common-Closure Principle
 
@@ -247,10 +253,21 @@ class UserCreator {
 }
 ```
 
-I've left the private methods empty because I want us to focus what might cause a change to each method.
+Let's examine each method to see what could cause it to change.
 
-First, the `getWelcomeMessage` and `getRegistrationFailureMessage` methods return strings that are likely the responsible of the design team. Next, the `insertIntoDatabase` method could change if the database model is changed or if we switch to a different database. `encryptPassword` might change if a better encryption algorithm becomes available. Finally, `validateEmail` could change due to a bug in email validation, but more interestingly it could change because of a business decision.
+* First, the `getWelcomeMessage` and `getRegistrationFailureMessage` methods are likely the responsibility of a design team. 
+* Next, the `insertIntoDatabase` method could change if the database model is changed or if we switch to a different database. 
+* `encryptPassword` might change if a better encryption algorithm becomes available. 
+* Finally, `validateEmail` could change due to a bug in email validation, but more interestingly it could change because of a business decision.
 
 What kind of business decision would affect email validation? Imagine that at first you have loose validation on emails. If it follows the proper shape then it will be valid. The database will enforce unique emails, so `validateEmail` does not need to worry about that. Now, say the business is having problems with spam accounts. They discover that many accounts can be created with "email@gmail.com" by doing things like "email+1@gmail.com". Only one email is actually used, because gmail ignores the "+1" bit. Now, the business asks for stricter email validation. Emails will be stripped down so that any ignored characters can't be used to make a new account.
 
+Not only are we changing how emails are validated, the business has also decided that users should be able to log in with their phone number or with a third party service. With our current implementation we are going to have a huge if/else chain or case block to determine what validation to use.
+
 Applying the Common-Closure Principle (CCP) to a class states that it should only have one reason to change. I have just listed four reasons, and just as many responsible teams, for this class to change. Could it be possible that it violates the CCP? If so, how can we fix it?
+
+![User Creator Diagram](https://raw.githubusercontent.com/JustinDFuller/blog-posts/master/media/SOLID-single-responsibility-principle/User%20Creator.png)
+
+This diagram shows a potential way to isolate the different reasons for change. Now the `UserCreator` will use a `UserValidator`, `UserStore`, and `StringEncryptor` implementation. This means that `UserCreator` is now focused on the domain logic, which is "First we validate the user, then we encrypt the password, then we save it in the database, finally we return the results, which include if an error occured." The _how_ of the validation, encryption, and saving are left as mere implementation details. The high level flow is the only thing that `UserCreator` cares about.
+
+What have we done here? We've made a trade-off. The trade is simplicity (all the code lived in a single class) for safety and malleability.
