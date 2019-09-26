@@ -1,3 +1,9 @@
+# SOLID JavaScript - The Single-Responsibility Principle (Variables & Functions)
+
+In this series we are exploring what the SOLID principles look like when they are applied to JavaScript. In the [previous post](INSERT URL HERE) I outlined what the Single-Responsibility Principle is and why one would care about it. In this post we will look at its practicle applications for JavaScript variables and functions. In a later post I will explore what this principle can do for objects, classes, and modules.
+
+![SOLID JavaScript](https://raw.githubusercontent.com/JustinDFuller/blog-posts/master/media/SOLID-single-responsibility-principle/Logo.jpg)
+
 ## Variables
 
 The Single Responsibility principle (SRP) can be applied at any level of programming. From variables, to functions, all the way up to macro-level software components
