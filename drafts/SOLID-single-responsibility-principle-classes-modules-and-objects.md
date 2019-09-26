@@ -1,21 +1,22 @@
+# SOLID JavaScript - The Single-Responsibility Principle (Objects, Classes, & Modules)
+
+In this series we are exploring what the SOLID principles look like when they are applied to JavaScript. In a [previous post](INSERT URL HERE) I outlined what the Single-Responsibility Principle (SRP) is and why one would care about it. The last post began to explore its practicle applications for JavaScript variables and functions. Here we will apply the principle to Objects, Classes, and Modules. Three ways to group code by their logical purpose. 
+
+As we move up in orders of complexity, first we have variables, then we have functions, and higher up we have groupings such as a class. As the complexity of the grouping increases, so does the complexity of the Single-Responsibility Principle. When you group functionality together, it becomes harder to ensure that it all serves the same purpose. It also becomes more nuanced and difficult to detect. Thankfully, there are still plenty of clear indicators that the SRP is being violated.
+
 ## Classes, Objects, and Modules
 
-Moving up another unit of complexity brings us to classes, objects, and modules. At this level the Single Responsibility Principle can become more
-nuanced and harder to detect. Thankfully, there are still plenty of clear indicators that the SRP is being violated.
+First, you may wonder why I have grouped these three concepts—classes, objects, and modules—together. It's because they are used to group concepts together—at least, when they are used correctly.
 
-First, you may wonder why I have grouped these three concepts together. It's because they are used to group concepts together—at least, when
-they are used correctly.
+A class, object, or module should contain a group of methods and properties that belong to a specific set of functionality. The SRP states that there should be a single, cohesive purpose to everything in the class, but what does that mean? Clearly, not every method and property can have the exact same purpose. That would be pointless. 
 
-A class, object, or module should contain a group of methods and properties that belong to a specific set of functionality. The SRP states that
-there should be a single, cohesive purpose to everything in the class, but what does that mean? Clearly, not every method and property can have the exact same purpose—that would be pointless. 
-
-To establish what "single responsibility" means, another set of principles can be borrowed from. These principles are aimed at packages but the ideas can also be usefully applied to a single Class within a package. 
+To establish what "single responsibility" means, another set of principles can be borrowed from. These principles are aimed at packages but the ideas can also be usefully applied to a single Class, object, or module within a package. 
 
 ### Common-Reuse Principle
 
-The first package principle is the __Common-Reuse Principle__. This principle states that things that are used together should be grouped together and, conversely, things that are not used together should not be grouped together. Notice that I am using the ambigious, "things". I use this vague word because I intent to apply this principle to classes, modules, and packages.
+The first package principle is the __Common-Reuse Principle__. This principle states that things that are used together should be grouped together and, conversely, things that are not used together should not be grouped together.
 
-What does this look like in class form?
+Here's a class.
 
 ```typescript
 class User {
@@ -30,23 +31,23 @@ class User {
 }
 ```
 
-This trivial example shows a `User` class that implements three sets of functionality. 
+What does it do?
 
-The first set of functionality is for the registration process. It validates and creates a new user. 
+The first set of functionality is for user registration. It validates and creates a new user. The second set displays a welcome message. 
 
-In the second scenario, the class displays a welcome message. 
+These functions are never used at the same time. Therefor, the Common-Reuse Principle states that this class may benefit from being split.
 
-These two sets of methods and related properties are never used at the same time. Therefor, the Common-Reuse Principle states that this class may benefit from becoming two classes.
+What benefits come from dividing the class? 
 
-So, what benefits could come from splitting up a class or module? 
+At the most basic level, the class should become easier to understand. By doing less, the class will have less code to understand as I seek to find where to make a change.
 
-At a basic level, the class should become easier to understand. By doing less, there will be less code for a developer to wade through as they seek to understand where to make a change.
+Next, the class or module becomes easier to extend. This will be very important when we begin to apply the next principle, the [Open-Closed Principle](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle), which states that (paraphrasing) software should be changed through addition, rather than modification.
 
-Next, the class or module becomes easier to use. 
+To understand this, suppose this `User` has multiple types of entitlements, multiple types of welcome messages, and multiple ways to create the user. Worse, the multiple types are not compatible. Imagine that there are 3 types of users for entitlements: a regular user, a super (admin) user, and a banned user. There are also multiple welcome message types: a normal user, a user who has been gone a long time, and a premium user.
 
-For example, suppose the `User` class needs to have a data store injected for the `create()` method. On the other hand, the display methods do not need a store injected. The display methods only need a simple `User` data object. When the above code is only one class you must inject an unecessary dependency. Once it's split up there is less overhead.
+This would be very difficult to implement with polymorphism. You could create an additional `SuperUser` and `BannedUser` class, but what if the SuperUser is logged out a long time? What if a `BannedUser` is a `PremiumUser`? You will probably be forced to resort to an `if/else` chain to handle this logic. Polymorphism and extension won't be options.
 
-By splitting up the class, giving it less responsibility, it is now open for extension. The following examples shows how an extendable `EntitlementChecker` can now be implemented.
+How can this be fixed? Here's one idea.
 
 ```typescript
 interface EntitlementChecker {
@@ -72,19 +73,15 @@ class BanneduserEntitlementChecker implements EntitlementChecker {
 }
 ```
 
-_Note:_ Examples like this always fall short, since the example has to be small to create a reasonably sized post, the example is almost always to small to really be worth the effort. You'll just have to imagine the example as part of a larger application.
-
 Here's what the class diagram looked like before it was split up.
 
 ![User UML](https://raw.githubusercontent.com/JustinDFuller/blog-posts/master/media/SOLID-single-responsibility-principle/User.png)
 
-This polymorphism would have been cumbursome before the split. Each implementation would be overriding one method while being forced to inherit from the `User` base class. It may have been forced to unecessarily inject a dependency for the creation methods. 
+Since all the logic lived in the single `User` class it would have been close to impossible to close this class to validation changes. We would have to modify and re-test the whole class whenever a change occurred.
 
 ![User with EntitlementChecker](https://raw.githubusercontent.com/JustinDFuller/blog-posts/master/media/SOLID-single-responsibility-principle/EntitlementCheckers.png)
 
-The diagram now shows that each type of entitlement checker gets a separate implementation. This polymorphism is easy to accomplish because the class is focused. Adding a new way of checking entitlements will be easy and changes to each entitlement implementation will be isolated from the other checkers. This makes future changes easier and safer.
-
-How could this structure have been implemented before the class was split up? What if A `SuperUser` could have multiple display implementations? Polymorphism would be very difficult to accomplish. Instead the class would likely be forced to use if-else statements to determine which logic to use.
+The diagram now shows that each type of entitlement checker gets a separate implementation. This polymorphism is easy to accomplish because the `EntitlementChecker` interface, and related implementations, is focused. Adding a new way of checking entitlements will be easy and changes to each entitlement implementation will be isolated. Change is now easy and safe.
 
 ### Common-Closure Principle
 
