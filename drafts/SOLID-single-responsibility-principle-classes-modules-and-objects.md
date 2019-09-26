@@ -2,6 +2,8 @@
 
 In this series we are exploring what the SOLID principles look like when they are applied to JavaScript. In a [previous post](INSERT URL HERE) I outlined what the Single-Responsibility Principle (SRP) is and why one would care about it. The last post began to explore its practicle applications for JavaScript variables and functions. Here we will apply the principle to Objects, Classes, and Modules. Three ways to group code by their logical purpose. 
 
+![SOLID JavaScript](https://raw.githubusercontent.com/JustinDFuller/blog-posts/master/media/SOLID-single-responsibility-principle/Logo.jpg)
+
 As we move up in orders of complexity, first we have variables, then we have functions, and higher up we have groupings such as a class. As the complexity of the grouping increases, so does the complexity of the Single-Responsibility Principle. When you group functionality together, it becomes harder to ensure that it all serves the same purpose. It also becomes more nuanced and difficult to detect. Thankfully, there are still plenty of clear indicators that the SRP is being violated.
 
 ## Classes, Objects, and Modules
