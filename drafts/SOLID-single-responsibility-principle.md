@@ -4,6 +4,8 @@ As I continue on the journey of learning programming, I recently spent a lot of 
 
 Most recently I have been reading his book, [Agile Software Development, Principles, Patterns, and Practices](https://amzn.to/31H3Lz6) which dives deeply into SOLID and Object Oriented Programming in C++ and Java. I highly recommend all three books and I'll be sharing what I learned in this series.
 
+![SOLID JavaScript](https://raw.githubusercontent.com/JustinDFuller/blog-posts/master/media/SOLID-single-responsibility-principle/Logo.jpg)
+
 The [SOLID](https://en.wikipedia.org/wiki/SOLID) principles are intended to assist a developer in writing code that is easy to change. The idea is that software provides two values:
 
 1. What the software can do today.
