@@ -1,14 +1,14 @@
-# SOLID JavaScript - The Single-Responsibility Principle (Objects, Classes, & Modules)
+# SOLID JavaScript - Single-Responsibility Principle (Objects)
 
-In this series, we are exploring what the SOLID principles look like when they are applied to JavaScript. In a [previous post](INSERT URL HERE) I outlined what the Single-Responsibility Principle (SRP) is and why one would care about it. The last post began to explore its practical applications for JavaScript variables and functions. Here we will apply the principle to Objects, Classes, and Modules. Three ways to group code by their logical purpose. 
+In this series, we are exploring what the SOLID principles look like when they are applied to JavaScript. In a [previous post](INSERT URL HERE) I outlined what the Single-Responsibility Principle (SRP) is and why one would care about it. The last post began to explore its practical applications for JavaScript variables and functions. Here we will apply the principle to objects.
 
 ![SOLID JavaScript](https://raw.githubusercontent.com/JustinDFuller/blog-posts/master/media/SOLID-single-responsibility-principle/Logo.jpg)
 
-As we move up in orders of complexity, first we have variables, then we have functions, and higher up we have groupings such as a class. As the complexity of the grouping increases, so does the complexity of the Single-Responsibility Principle. When you group functionality together, it becomes harder to ensure that it all serves the same purpose. It also becomes more nuanced and difficult to detect. Thankfully, there are still plenty of clear indicators that the SRP is being violated.
+As we move up in orders of complexity, first we have variables, then we have functions, and higher up we have groupings such as an object. An object can be a plain object, an object of module exports, or a class. As the complexity of the grouping increases, so does the complexity of the Single-Responsibility Principle. When you group functionality together, it is difficult to ensure it all serves the same purpose because responsiblity is sometimes nuanced and hard to see. Thankfully, there are still plenty of clear indicators that the SRP is being violated.
 
-## Classes, Objects, and Modules
+## Objects
 
-First, you may wonder why I have grouped these three concepts—classes, objects, and modules—together. It's because they are used to group concepts together—at least when they are used correctly.
+I mentioned that in this post we'll be applying the SRP to objects, but I immediately also mentioned classes and modules. You may wonder why I have grouped these three concepts together. It's because they are used to _group concepts together_—at least when they are used correctly.
 
 A class, object, or module should contain a group of methods and properties that belong to a specific set of functionality. The SRP states that there should be a single, cohesive purpose to everything in the class, but what does that mean? Not every method and property can have the same purpose. That would be pointless. 
 
@@ -41,9 +41,9 @@ These functions are never used at the same time. Therefore, the Common-Reuse Pri
 
 What benefits come from dividing the class? 
 
-At the most basic level, the class should become easier to understand. By doing less, the class will have less code to understand as I seek to find where to make a change.
+At the most basic level, the class should become easier to understand. By doing less, the class will have less code. By having less code, the class will likely be easier to understand.
 
-Next, the class or module becomes easier to extend. This will be very important when we begin to apply the next principle, the [Open-Closed Principle](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle), which states that (paraphrasing) software should be changed through addition, rather than modification.
+Next, the class or module becomes easier to extend. This will be very important when we begin to apply the next posts's principle, [the Open-Closed Principle](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle), which states that (paraphrasing) software should change through addition, rather than through modification.
 
 To understand this, suppose this `User` has multiple types of entitlements, multiple types of welcome messages, and multiple ways to create the user. Worse, the types are not compatible. Imagine that there are 3 types of users for entitlements: a regular user, a super (admin) user, and a banned user. There are also multiple welcome message types: a normal user, a user who has been gone a long time, and a premium user.
 
@@ -185,7 +185,7 @@ We have attempted to accomplish this goal by writing code that follows the Singl
 
 We've borrowed from other principles, like the Common-Reuse Principle—code that is used together should stay together; the Common-Closure Principle—code that changes together should stay together; and finally, the Dependency-Inversion Principle—depend on interfaces instead of concrete implementations. 
 
-These principles have led to added indirection in the code. Some developers consider all indirection to be evil, however, as Kent Beck and [Martin Fowler write in Fowler's programming classic, Refactoring](https://amzn.to/2lkVFMu):
+These principles have led to added indirection in the code. Some developers consider all indirection to be evil, however, as Kent Beck and Martin Fowler write in [Fowler's programming classic, Refactoring](https://amzn.to/2lkVFMu):
 
 > Indirection can pay for itself. Here are some of the ways.
 >
@@ -195,7 +195,7 @@ These principles have led to added indirection in the code. Some developers cons
 >
 > * To isolate change.
 
-Our code is benefiting from all of these, so I would say it was worth it. In the end, the only way to know is to wait until changes are requested, and see if the indirection benefited us or if it got in the way. If it got in the way, we can always refactor the code and try again.
+Our code is benefiting from all of these, so I would say it was worth it. In the end, the only way to know is to wait until changes are requested and see if the indirection benefited us or if it got in the way. If it got in the way, we can always refactor the code and try again.
 
 ---
 
