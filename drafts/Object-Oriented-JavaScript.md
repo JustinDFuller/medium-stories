@@ -77,3 +77,13 @@ Further reading led me to [Refactoring](https://amzn.to/2AJ0VO8) by Martin Fowle
 There's only one problem. These books are all written in Java and C++.
 
 That means that, in order to apply these concepts to the Web Development work that I do every day, the examples and concepts must be translated—even if just in my head—to JavaScript. 
+
+I don't want this valuable content to only be available to backend developers who already know these languages. The principles and strategies are applicable to web development too. So that leads to my __first goal__, which is to provide Object Oriented Programming principles and strategies in the JavaScript language. 
+
+I plan to cover much of the same content that is provided by Martin Fowler and Robert Martin's books, the difference being that it will be in JavaScript. 
+
+The other difference is that these books focus heavily on the logic without connecting them to a fully functioning application. I imagine this was an intentional decision, and we'll talk more about this later, but my __second goal__ is to show these concepts in context with fully funtioning applications.
+
+Now, before I conclude this section, I believe that it would be dishonest of me to pretend, or even to omit, the fact that I have not been able to fully use these concepts and strategies in a production application. This is not to say that I don't practice them whenever I write code, but—unfortunately—I have only ever worked on applications that are, perhaps accidentally, not Object Oriented. This leads me to my __third and final goal__, which is to formulate the words needed to explain and advocate for these strategies in the context of real-world day-to-day development. I have found that, after learning about these principles and strategies, I can use them but I struggle to convince others to use them. This may be my most important goal, because it has the most direct impact for my growth. Hopefully it can provide others with the same benefits as well.
+
+This is why I find myself writing about Object Oriented Programming principles and strategies. To translate it to JavaScript, to give them context in fully-functioning applications, and to provide the words necessary to explain and advocate them in the real world.
