@@ -87,3 +87,15 @@ The other difference is that these books focus heavily on the logic without conn
 Now, before I conclude this section, I believe that it would be dishonest of me to pretend, or even to omit, the fact that I have not been able to fully use these concepts and strategies in a production application. This is not to say that I don't practice them whenever I write code, but—unfortunately—I have only ever worked on applications that are, perhaps accidentally, not Object Oriented. This leads me to my __third and final goal__, which is to formulate the words needed to explain and advocate for these strategies in the context of real-world day-to-day development. I have found that, after learning about these principles and strategies, I can use them but I struggle to convince others to use them. This may be my most important goal, because it has the most direct impact for my growth. Hopefully it can provide others with the same benefits as well.
 
 This is why I find myself writing about Object Oriented Programming principles and strategies. To translate it to JavaScript, to give them context in fully-functioning applications, and to provide the words necessary to explain and advocate them in the real world.
+
+## Why have I switched from functional programming to Object Oriented? 
+
+Here's a question that absolutely no one is asking. Why am I writing about OOP instead of functional programming? If you look through the history of my posts you'll see that I have mostly written about functional programming. I have been heavily influenced by Eric Elliot's [Composing Software book](https://medium.com/javascript-scene/composing-software-the-book-f31c77fc3ddc), which breaks down functional JavaScript in an incredibly easy-to-digest way.
+
+I don't deny that functional programming is an excellent paradigm, but I have found that adding into an existing application can lead to a big mess. I suspected that it wasn't due to any fault in functional programming, but instead I attributed it to mis-using, mis-understand, or just completely missing some crucial piece of functional programming.
+
+It finally made sense when I read Robert Martin's explanation of programming paradigms in his book, [Clean Architecture](https://amzn.to/2Nur1g3). Martin outlines three programming paradigms as a set of stair steps.
+
+The steps start with [Structured programming](https://en.wikipedia.org/wiki/Structured_programming), which imposed discipline on programs by eleminating the use of `goto` after Edsger Dijkstra's open letter [Go To Statement Considered Harmful](https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf). Programs were improved by introducing control flow concepts such as `if/then/else` blocks. This paradigm imposed discipline on programs by removing `goto` statements.
+
+Next there is [Procedural programming](https://en.wikipedia.org/wiki/Procedural_programming) which imposes discipline on programs by grouping sections of 
