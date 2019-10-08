@@ -92,10 +92,18 @@ This is why I find myself writing about Object Oriented Programming principles a
 
 Here's a question that absolutely no one is asking. Why am I writing about OOP instead of functional programming? If you look through the history of my posts you'll see that I have mostly written about functional programming. I have been heavily influenced by Eric Elliot's [Composing Software book](https://medium.com/javascript-scene/composing-software-the-book-f31c77fc3ddc), which breaks down functional JavaScript in an incredibly easy-to-digest way.
 
-I don't deny that functional programming is an excellent paradigm, but I have found that adding into an existing application can lead to a big mess. I suspected that it wasn't due to any fault in functional programming, but instead I attributed it to mis-using, mis-understand, or just completely missing some crucial piece of functional programming.
+I don't deny that functional programming is an excellent paradigm, but I have found that, under certain circumstances, adding into an existing application can lead to a big mess. I would like to explain what those circumstances are, but first we must briefly look at the history of several programming paradigms.
 
-It finally made sense when I read Robert Martin's explanation of programming paradigms in his book, [Clean Architecture](https://amzn.to/2Nur1g3). Martin outlines three programming paradigms as a set of stair steps.
+I discovered why I was having so much trouble when I read Robert Martin's explanation of programming paradigms in his book, [Clean Architecture](https://amzn.to/2Nur1g3). Martin outlines these programming paradigms as a set of stair steps.
 
-The steps start with [Structured programming](https://en.wikipedia.org/wiki/Structured_programming), which imposed discipline on programs by eleminating the use of `goto` after Edsger Dijkstra's open letter [Go To Statement Considered Harmful](https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf). Programs were improved by introducing control flow concepts such as `if/then/else` blocks. This paradigm imposed discipline on programs by removing `goto` statements.
+All programs, by default, are unstructured. This means that the programs can access any variable and jump to any line in the program. These are behaviors provided by the operating system. This means that, to the computer, all programs and programming languages are unstructured. 
 
-Next there is [Procedural programming](https://en.wikipedia.org/wiki/Procedural_programming) which imposes discipline on programs by grouping sections of 
+This is clearly not ideal. Unstructured programs are difficult to reason about, which makes them unsafe. So the programming paradigm steps start with [Structured programming](https://en.wikipedia.org/wiki/Structured_programming), which imposed discipline on programs by eleminating the use of `goto` after Edsger Dijkstra's open letter "[Go To Statement Considered Harmful](https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf)". Programs were improved by introducing control flow concepts such as `if/then/else` blocks and `for` or `while` loops. Variables are only accessible within certain scopes.
+
+This paradigm imposed discipline on programs by removing `goto` statements and limiting access to variables.
+
+Building off of structured programming, [Procedural programming](https://en.wikipedia.org/wiki/Procedural_programming) imposed discipline on programs by grouping sections of logic into groups known as procedures, routines, or—most commonly today—functions. This paradigm was used by programming languages such as Fortran, Pascal, and C.
+
+This paradigm imposed discipline in programs by grouping logic into functions.
+
+Next comes the subject of this writing, Object Oriented Programming. OOP seeks to impose more discipline by grouping data and functions together. The intention is to only allow an object's functions operate on the data, further restricting access to variables.
