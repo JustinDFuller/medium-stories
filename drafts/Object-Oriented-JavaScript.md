@@ -6,6 +6,7 @@
 * Why have I switched from functional programming to Object Oriented?
   * Does it have to be one or the other?
 * What is Object Oriented Programming?
+  * Goal of Object Oriented Programming
   * Encapsulation
   * Inheritance, composition, delegation
   * Polymorphism
@@ -119,3 +120,9 @@ Here lies the issue with adding functional programming in the middle of a proced
 In a perfect world these paradigms would not clash, but in the real world they often do. Instead of climbing up the tree, now you're swinging from branch to branch. (First steps, then branches, now a whole tree. I know.)
 
 So, what's my take? If you can be completely functional, be functional. Otherwise, use Object Oriented programming. In most pre-existing applications you will experience more trouble than it's worth by mixing Functional programming in with Object Oriented and Procedural programming.
+
+## What is Object Oriented Programming?
+
+What is an object, and how can one be oriented to it? What can a program be oriented to, other than an object?
+
+It turns out that the term "object" began showing up, in relation to programming, at MIT in the early 1960s. The term was associated with Lisp, you can find mentions of it in the [Lisp 1](http://history.siam.org/sup/Fox_1960_LISP.pdf) and [Lisp 1.5](https://archive.org/details/lisp15programmer00john/page/n3) programming manuals. 
