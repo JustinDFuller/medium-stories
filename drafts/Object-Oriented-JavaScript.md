@@ -101,7 +101,11 @@ I discovered why I was having so much trouble when I read Robert Martin's explan
 
 All programs, as far as the computer is aware, are unstructured. This means that the computer will allow a program to access any variable and jump to any line in the program. These are behaviors provided by the operating system. This is clearly not ideal. First, if a variable can be accessed or modified from anywhere in the program, then it can't really be trusted. Second, imagine that any line of code can jump to any other line of code; this would make changes incredibly difficult, because you have no idea who is attempting to jump to the line you are changing. 
 
-So this led to the next programming paradigm step, [Structured programming](https://en.wikipedia.org/wiki/Structured_programming), which imposed discipline on programs by eleminating the use of `goto`—largely due to Edsger Dijkstra's open letter [_Go To Statement Considered Harmful_](https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf). Programs were improved by introducing control flow concepts such as `if/then/else` blocks and `for` or `while` loops; structures that replace unpredictable `goto` jumps with predictable, logical movements. Programs were also improved by making variables only accessible to certain well-defined scopes.
+So this led to the next programming paradigm step, [Structured programming](https://en.wikipedia.org/wiki/Structured_programming), which imposed discipline on programs by eleminating the use of `goto`—largely due to Edsger Dijkstra, who is credited with coining the term "Structured Programming", in his open letter, [_Go To Statement Considered Harmful_](https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf). Programs were improved by introducing control flow concepts such as `if/then/else` blocks and `for` or `while` loops; structures that replace unpredictable `goto` jumps with predictable, logical movements. Programs were also improved by making variables only accessible to certain well-defined scopes.
+
+> The unbridled use of the go to statement has as an immediate consequence that it becomes terribly hard to find a meaningful set of coordinates in which to describe the process progress. ... The go to statement as it stands is just too primitive, it is too much an invitation to make a mess of one's program. 
+>
+> — Edsger Dijkstra, _Go To Statement Considered Harmful_
 
 This first step led to safer programs, because the movement through the program's instructions, as well as changes to the data, became far more predictable.
 
