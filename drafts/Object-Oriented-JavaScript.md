@@ -149,9 +149,9 @@ Your program may be oriented toward individual instructions, primitive data type
 
 ### What is the goal of Object Oriented Programming?
 
-We are now at a crucial point in exploring Object Oriented JavaScript. Hopefully it is understood what Object Oriented programming is, where it came from, and why I am discussing it, but there's no clear goal. Why does Object Oriented programming exist? Why do programming paradigms exist? What's the goal for each principle we uncover from this point forward?
+We are now at a crucial point in exploring Object Oriented JavaScript. Hopefully it is understood what Object Oriented programming is, where it came from, and why I am discussing it, but there's still no clear goal. 
 
-Here it is:
+Why does Object Oriented programming exist? Why do programming paradigms exist?
 
 __The goal of Object Oriented programming is to make a program easy to change.__
 
@@ -186,9 +186,7 @@ If your business can't change, it can't adapt. If your business can't adapt, it 
 
 Now, let's address some worthy goals that didn't quite make the cut.
 
-### But what about...
-
-But, what about being easy to understand? 
+### But, what about being easy to understand? 
 
 Why do you need to understand software? Almost all software is easy to understand while you are writing it for the first time. Usually all you need is clean formatting with expressive and accurate variable naming. This will get you through the first iteration of many programs. 
 
@@ -196,6 +194,16 @@ Many of this have experienced this first-hand. You implement a program, it works
 
 You need to understand software when you want to change it. Being easy to understand is a sub-goal of being easy to change, because there's no other reason to understand the software. In fact, if you were to create software that never needs to be changed then you might as well compile the application and delete the source code; it serves no further purpose.
 
-But, what about performance?
+### But, what about performance?
 
-But, what about reliability?
+There are a number of reasons that performance cannot be the main goal of Object Oriented programming.
+
+First, it can't be because performance is a moving goal-post and it's always relative. A program considered fast in the year 1999 would likely be considerd unusably slow today. Even the fastest internal corporate applications would be unlikely to meet the speed standards of a consumer-facing shopping application like Amazon.
+
+Second, performance gains have largely been due to hardware, rather than software. Hardware has improved drastically since the 1980s, but, fundamentally, our programming languages are still the same. This presents a problem because your software implementation may have to change to keep up with new hardware. If your software is unable to change to keep up with modern hardware or software improvements, even the fastest application today will be a slow application tomorrow.
+
+It should also be considered that most applications do not start off with great performance. Performance typically comes from tuning and adjusting as scale increases. If your software is difficult to change, you may not be able to make the necessary adjustments as your product usage increases, destroying the usability of your software. If you can't change to keep up with usage, this means you have to get it right the first time, which will probably end up looking similar to [one of the major causes of startup failures, premature scaling](https://s3.amazonaws.com/startupcompass-public/StartupGenomeReport2_Why_Startups_Fail_v2.pdf), but your software will be prematurely scaled, rather than your business.
+
+Therefor performance is a benefit that comes from being easy to change, so it cannot be the main goal of OOP.
+
+### But, what about reliability?
