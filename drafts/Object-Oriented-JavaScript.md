@@ -164,4 +164,38 @@ First, one must understand that software has two values.
 1. The value of what the software can do today.
 2. The value of what the software can do tomorrow.
 
-Your manager, project manager, and product owner are very likely to be focused on what the software can do today. You, on the other hand, need to be focused on what the software can do tomorrow. Why? Because, as 
+Your manager, project manager, and product owner are very likely to be focused on what the software can do today. You, on the other hand, need to be focused on what the software can do tomorrow. Why? Because, as should be expected by any growing company, the business needs will constantly change, and so should your software.
+
+Think about what happens when "requirements changes" or "feature requests" come to your team. What is the general reaction? 
+
+Despair and frustration? 
+
+> "Why can't they just make up their minds?" 
+> 
+> "We've already made changes three times this year!" 
+
+Or are you able to say,
+
+> "no problem, we've designed an application that is easy to change, this should only take us a couple of days."
+
+If you are a software developer it is very likely that you are using an agile development methodology. If you are, it's right here in the [Agile Manifesto](https://agilemanifesto.org/).
+
+> Responding to change over following a plan
+
+If your business can't change, it can't adapt. If your business can't adapt, it will die. Therefor, your software must be able to change and adapt to the needs of the business, so your software must be easy to change. 
+
+Now, let's address some worthy goals that didn't quite make the cut.
+
+### But what about...
+
+But, what about being easy to understand? 
+
+Why do you need to understand software? Almost all software is easy to understand while you are writing it for the first time. Usually all you need is clean formatting with expressive and accurate variable naming. This will get you through the first iteration of many programs. 
+
+Many of this have experienced this first-hand. You implement a program, it works perfectly and you feel great about it—only to come back months later and think "what a mess, I don't understand any of this".
+
+You need to understand software when you want to change it. Being easy to understand is a sub-goal of being easy to change, because there's no other reason to understand the software. In fact, if you were to create software that never needs to be changed then you might as well compile the application and delete the source code; it serves no further purpose.
+
+But, what about performance?
+
+But, what about reliability?
