@@ -190,9 +190,13 @@ Now, let's address some worthy goals that didn't quite make the cut.
 
 Why do you need to understand software? Almost all software is easy to understand while you are writing it for the first time. Usually all you need is clean formatting with expressive and accurate variable naming. This will get you through the first iteration of many programs. 
 
-Many of this have experienced this first-hand. You implement a program, it works perfectly and you feel great about it—only to come back months later and think "what a mess, I don't understand any of this".
+You may have experienced this first-hand: you implement a program, it works well and you feel accomplished, only to come back months later and think "what a mess, I don't understand any of this." It's happened to me plenty of times.
 
-You need to understand software when you want to change it. Being easy to understand is a sub-goal of being easy to change, because there's no other reason to understand the software. In fact, if you were to create software that never needs to be changed then you might as well compile the application and delete the source code; it serves no further purpose.
+There must be some other reason that we need to understand software. 
+
+Software needs to be understood when it needs to be changed. Being easy to understand is a sub-goal of being easy to change, because there's no other reason to understand the software. In fact, if you were to create software that never needs to be changed then you might as well compile the application and delete the source code; it serves no further purpose.
+
+Software that is easy to change is easy to understand, and software that is easy to understand may not necessarily be easy to change.
 
 ### But, what about performance?
 
@@ -204,6 +208,6 @@ Second, performance gains have largely been due to hardware, rather than softwar
 
 It should also be considered that most applications do not start off with great performance. Performance typically comes from tuning and adjusting as scale increases. If your software is difficult to change, you may not be able to make the necessary adjustments as your product usage increases, destroying the usability of your software. If you can't change to keep up with usage, this means you have to get it right the first time, which will probably end up looking similar to [one of the major causes of startup failures, premature scaling](https://s3.amazonaws.com/startupcompass-public/StartupGenomeReport2_Why_Startups_Fail_v2.pdf), but your software will be prematurely scaled, rather than your business.
 
-Therefor performance is a benefit that comes from being easy to change, so it cannot be the main goal of OOP.
+Software that is easy to change can become performant, but performant-but-unchangeable software will—when compared to other software—quickly become slow.
 
 ### But, what about reliability?
