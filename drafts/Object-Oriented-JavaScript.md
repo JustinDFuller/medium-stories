@@ -129,4 +129,39 @@ So, what's my take? If you can be completely functional, be functional. Otherwis
 
 What is an object, and how can one be oriented to it? What can a program be oriented to, other than an object?
 
-It turns out that the term "object" began showing up, in relation to programming, at MIT in the early 1960s. The term was associated with Lisp, you can find mentions of it in the [Lisp 1](http://history.siam.org/sup/Fox_1960_LISP.pdf) and [Lisp 1.5](https://archive.org/details/lisp15programmer00john/page/n3) programming manuals. 
+It turns out that the term "object" began showing up, in relation to programming, at MIT in the early 1960s. The term was associated with Lisp, you can find mentions of it in the [Lisp 1](http://history.siam.org/sup/Fox_1960_LISP.pdf) and [Lisp 1.5](https://archive.org/details/lisp15programmer00john/page/n3) programming manuals. It started out as a synonym for a specific type of data but over time came to represent any item that has attributes. 
+
+This has a clear correlation to real life, that's what makes it so useful as a programming concept. A human has hair color, height, a birth date. A car has a make, model, color, and mileage. So also, an object in a program has attributes. The examples I gave could be for a program or for real life. 
+
+In life, an object can have abilities, each of which knows how to use all it's individual attributes to perform some actions. 
+
+For example, when you a turn a lamp on, do you take all the individual pieces of the lamp and adjust them in the appropriate way that a current of electricity will make it illuminate? No, you pull a cable or press a button and it does everything itself.
+
+When you start your car, or turn on your tv, do you manipulate all the inner-circutry, or do you press the "on" button? 
+
+In this way too, program objects can represent real life. They can hide all the attributes required for it to function and instead only expose to you the functionality that they provide.
+
+This is how a program can be "oriented" to objects. The focus is on objects. Objects are used to represent your program, and your program of objects attempts to represent some real-world behavior. 
+
+Think about what it means to be oriented to something. At work, I find that I am naturally "process oriented", meaning that I naturally tend to think about, and spend time on, improving the processes that my team uses to create software. Others are "detail oriented", meaning that they naturally focus intensely on every little detail and they can't stop until it's perfect. Your living room may be oriented toward a television, bookshelf, or window. Your house may be oriented north, east, south, or west.
+
+Your program may be oriented toward individual instructions, primitive data types, immutable data types, lists, functions, or objects. Maybe it's partially oriented towards a few of them. After all, my living room is oriented toward my projector and my fire place. My house is oriented north and east. It doesn't have to be only one orientation.
+
+### What is the goal of Object Oriented Programming?
+
+We are now at a crucial point in exploring Object Oriented JavaScript. Hopefully it is understood what Object Oriented programming is, where it came from, and why I am discussing it, but there's no clear goal. Why does Object Oriented programming exist? Why do programming paradigms exist? What's the goal for each principle we uncover from this point forward?
+
+Here it is:
+
+__The goal of Object Oriented programming is to make a program easy to change.__
+
+There are many benefits provided by Object Oriented programming, there are many principles of Object Oriented programming, there are many strategies for Object Oriented programming, but the goal, the goal of any programming paradigm, is to make programs that are easy to change.
+
+Let's explore why this is the case, and why other goals didn't make the cut.
+
+First, one must understand that software has two values.
+
+1. The value of what the software can do today.
+2. The value of what the software can do tomorrow.
+
+Your manager, project manager, and product owner are very likely to be focused on what the software can do today. You, on the other hand, need to be focused on what the software can do tomorrow. Why? Because, as 
