@@ -2,7 +2,7 @@
 
 ## Outline
 
-* Why am I writing about Object Oriented JavaScript?
+* [Why am I writing about Object Oriented JavaScript?](#why-am-i-writing-about-object-oriented-javaScript)
 * Why have I switched from functional programming to Object Oriented?
   * Does it have to be one or the other?
 * What is Object Oriented Programming?
