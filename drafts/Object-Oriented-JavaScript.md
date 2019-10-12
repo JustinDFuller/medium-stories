@@ -3,10 +3,10 @@
 ## Outline
 
 * [Why am I writing about Object Oriented JavaScript?](#why-am-i-writing-about-object-oriented-javaScript)
-* Why have I switched from functional programming to Object Oriented?
-  * Does it have to be one or the other?
-* What is Object Oriented Programming?
-  * Goal of Object Oriented Programming
+* [Why have I switched from functional to Object Oriented programming?](#why-have-i-switched-from-functional-to-object-oriented-programming)
+  * [Programming Paradigms](#programming-paradigms)
+* [What is Object Oriented Programming?](#what-is-object-oriented-programming)
+  * [What is the goal of Object Oriented Programming](#what-is-the-goal-of-object-oriented-programming)
   * Encapsulation
   * Inheritance, composition, delegation
   * Polymorphism
@@ -89,7 +89,7 @@ Now, before I conclude this section, I believe that it would be dishonest of me 
 
 This is why I find myself writing about Object Oriented Programming principles and strategies. To translate it to JavaScript, to give them context in fully-functioning applications, and to provide the words necessary to explain and advocate them in the real world.
 
-## Why have I switched from functional programming to Object Oriented? 
+## Why have I switched from functional to Object Oriented programming? 
 
 Here's a question that absolutely no one is asking. Why am I writing about OOP instead of functional programming? If you look through the history of my posts you'll see that I have mostly written about functional programming. I have been heavily influenced by Eric Elliot's [Composing Software book](https://medium.com/javascript-scene/composing-software-the-book-f31c77fc3ddc), which breaks down functional JavaScript in an incredibly easy-to-digest way.
 
