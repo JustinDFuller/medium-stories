@@ -4,7 +4,7 @@ Are you struggling to find projects to showcase to potential employers? Have you
 
 If you answered yes to any of these questions, you should consider saving every practice problem you do in a public git repo, like [Github](https://github.com/).
 
-I try to keep up with programming trends, and one question that I see come up a lot, [particularly](https://www.reddit.com/r/cscareerquestions/) on [reddit](https://www.reddit.com/r/cscareerquestions/), is "What project should I do?"
+I try to keep up with programming trends, and one question that I see come up a lot, [particularly](https://www.reddit.com/r/learnprogramming/) on [reddit](https://www.reddit.com/r/cscareerquestions/), is "What project should I do?"
 
 Projects are a great way to learn, but most people don't have time to work on big projects in their free time. Another option is to work on algorithmic problems. You've got an almost 100% chance of running into at least one algorithm question if you are interviewing, plus they are a good way to learn a new programming language.
 
