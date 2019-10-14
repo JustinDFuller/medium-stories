@@ -7,6 +7,7 @@
   * [Programming Paradigms](#programming-paradigms)
 * [What is Object Oriented Programming?](#what-is-object-oriented-programming)
   * [What is the goal of Object Oriented Programming](#what-is-the-goal-of-object-oriented-programming)
+* Object Oriented Concepts
   * Encapsulation
   * Inheritance, composition, delegation
   * Polymorphism
