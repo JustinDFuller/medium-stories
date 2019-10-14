@@ -7,10 +7,10 @@
   * [Programming Paradigms](#programming-paradigms)
 * [What is Object Oriented Programming?](#what-is-object-oriented-programming)
   * [What is the goal of Object Oriented Programming](#what-is-the-goal-of-object-oriented-programming)
-* Object Oriented Concepts
-  * Encapsulation
-  * Inheritance, composition, delegation
-  * Polymorphism
+* [Object Oriented Concepts](#object-oriented-concepts)
+  * [Encapsulation](#encapsulation)
+  * [Inheritance, composition, delegation](#inheritance-composition-delegation)
+  * [Polymorphism](#polymorphism)
 * Is Object Oriented programming in JavaScript different than other programming languages?
   * Classical vs Prototypal inheritance
   * What does it mean in practice?
@@ -228,3 +228,11 @@ Martin Fowler and Kent Beck touch on this subject in [Refactoring](https://amzn.
 > * To isolate change.
 
 If your ultimate goal is to make a program that is easy to read, you may choose to sacrifice all indirection, even though that indirection may provide reusability and isolation. This is why we must have the same goal, which is to make a program that is easy to change. It should be readable and understandable enough to be able to make a change, but we may sacrifice that—only a little—to gain the isolation and reusability that enable easy changes.
+
+## Object Oriented Concepts
+
+### Encapsulation
+
+### Inheritance, composition, delegation
+
+### Polymorphism
