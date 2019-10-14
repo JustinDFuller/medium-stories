@@ -210,4 +210,20 @@ It should also be considered that most applications do not start off with great 
 
 Software that is easy to change can become performant, but performant-but-unchangeable software will—when compared to other software—quickly become slow.
 
-### But, what about reliability?
+### How to use the goal
+
+Hopefully I have made the case that the highest goal of Object Oriented programming, or indeed any programming paradigm, is to make changes easy. 
+
+It is important that this is clear upfront, because if we have different goals we will evaluate each approach with a different result in mind. This will lead us to make different decisions about what is correct. If we cannot agree on the goal, we certainly cannot agree on the approach, although some approaches may lead to fulfilling multiple goals.
+
+Martin Fowler and Kent Beck touch on this subject in [Refactoring](https://amzn.to/2lkVFMu):
+
+> Indirection can pay for itself. Here are some of the ways.
+>
+> * Sharing of logic.
+>
+> * Explain intention and implementation separately.
+>
+> * To isolate change.
+
+If your ultimate goal is to make a program that is easy to read, you may choose to sacrifice all indirection, even though that indirection may provide reusability and isolation. This is why we must have the same goal, which is to make a program that is easy to change. It should be readable and understandable enough to be able to make a change, but we may sacrifice that—only a little—to gain the isolation and reusability that enable easy changes.
