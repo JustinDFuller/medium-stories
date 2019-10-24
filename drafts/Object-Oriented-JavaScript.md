@@ -213,11 +213,17 @@ Software that is easy to change can become performant, but performant-but-unchan
 
 ### How to use the goal
 
+> Thou must also take heed of another kind of wandering, for they are idle in their actions, who toil and labour in this life, and have no certain scope to which to direct all their motions, and desires. — _Marcus Aurelius, Meditations_
+
 Hopefully I have made the case that the highest goal of Object Oriented programming, or indeed any programming paradigm, is to make changes easy. 
 
 It is important that this is clear upfront, because if we have different goals we will evaluate each approach with a different result in mind. This will lead us to make different decisions about what is correct. If we cannot agree on the goal, we certainly cannot agree on the approach, although some approaches may lead to fulfilling multiple goals.
 
-Martin Fowler and Kent Beck touch on this subject in [Refactoring](https://amzn.to/2lkVFMu):
+I find that one of the biggest points of contention about Object Oriented Programming is the use of indirection. To use indirection in programming is to contain information other than the place it is used. Indirection is used every time a function is created at one place in the code and used in another. Since an Object hides its data and internal logic, indirection is therefor a fundamental part of Object Oriented Programming.
+
+This bothers many programmers, so if you don't have the same goal, you may decide that the indirection is not worth the cost you pay in your ability to understand the code.
+
+Martin Fowler and Kent Beck touch on this delimna in [Refactoring](https://amzn.to/2lkVFMu):
 
 > Indirection can pay for itself. Here are some of the ways.
 >
@@ -227,11 +233,116 @@ Martin Fowler and Kent Beck touch on this subject in [Refactoring](https://amzn.
 >
 > * To isolate change.
 
-If your ultimate goal is to make a program that is easy to read, you may choose to sacrifice all indirection, even though that indirection may provide reusability and isolation. This is why we must have the same goal, which is to make a program that is easy to change. It should be readable and understandable enough to be able to make a change, but we may sacrifice that—only a little—to gain the isolation and reusability that enable easy changes.
+If your ultimate goal is to make a program that is easy to read, you may choose to sacrifice all indirection, even though that indirection may provide reusability and isolation—things that make change easier. 
+
+This is why we must have the same goal. Our top goal is to make a program that is easy to change. Yes, it should be readable and understandable but only enough to be able to make a change. The code may sacrifice readability—only a little—to gain the isolation and reusability that enable easy change.
 
 ## Object Oriented Concepts
 
+Object Oriented Programming is a programming paradigm made up of many little concepts and strategies. It can be difficult to point to one thing to say "this is what makes a program object oriented." In general, there are many little things that make a program object oriented. This section will give an overview of the most important Object Oriented Concepts and how they are used in JavaScript. There are many other concepts that will be discussed later but these are the foundational building blocks. Without these concepts Object Oriented Programming would not be nearly as useful as it is.
+
 ### Encapsulation
+
+If you were to encapsulate something, you would enclose it in some container. I encapsulate my food in my refridgerator. I encapsulate my soup in a can. I encapsulate the wiring of my television in, typically, a moulded plastic casing. I encapsulate the engine of my car in the frame and body. You get get the point. I hide the inner-workings in some sort of outer-container.
+
+In a JavaScript application, we encapsulate data in objects.
+
+```javascript
+const emptyTodo = {
+  completed: false,
+  text: ''
+}
+```
+
+The previous code sample shows a simple JavaScript object that represents an empty "todo" task. This plain object is most similar to an open box. It contains all the data inside of it, you simple reach in to get `emptyTodo.completed` and you receive the value `false`.
+
+This is a good start but it comes with probems. The properties of this plain object can be retrieved and set by anyone. To bring encapsulation to its full power there must be a way to hide data inside the object. Unfortunately, JavaScript (at the time of this writing) does not offer private properties or methods. Fortunately, there are other ways to accomplish this through closure.
+
+> To use closure is to create a variable that is visible only to a parent function that returns a child function (or functions) that make use of that variable. The variable is safely hidden from all but the parent and child functions.
+
+```javascript
+function EmptyTodo(todo = { completed: false, text: '' }) {
+  return {
+    complete() {
+     todo.completed = true
+    },
+    setText(text) {
+     todo.text = text
+    },
+    getText() {
+     return todo.text
+    }
+  }
+}
+```
+
+In this example we have used closure to hide the `todo` variable. This variable cannot be seen or changed by anything except the `EmptyTodo` function. The `EmptyTodo` function takes advantage of this by returning several methods that change or retrieve data from `todo`. We can squabble over the mutation of `todo` by these functions but the main goal has still been achieved, the data of `todo` is hidden, encapsulated, by `EmptyTodo`.
+
+Why is this valuable?
+
+Here's an example. I mentioned that we could squabble over mutation of the `todo` object. Perhaps the mutation of the original `emptyTodo` object has become a problem. This variable, `emptyTodo` is used in many places and is also mutated in many places. Changes to the object have become unpredictable and hard to manage, causing bugs. Because `emptyTodo` has no encapsulation, a developer must fix this by going throughout the entire code base, everywhere that `emptyTodo` is used, to replace all mutations with some sort of immutable operation. This can be a difficult a bug-prone task.
+
+On the other hand, `EmptyTodo` encapsulates the data and the operations on `todo`. There is only one place that these operations occur. Here's how immutability might be accomplished when there is encapsulation.
+
+```javascript
+function EmptyTodo(todo = { completed: false, text: '' }) {
+ function update(key, value) {
+  return Object.assign({}, todo, { [key]: value })
+ }
+ 
+ return {
+   complete() {
+    return update('completed', true)
+   },
+   setText(text) {
+    return update('text', text)
+   },
+   getText() {
+    return todo.text
+   }
+ }
+}
+```
+
+There is only one place that a change needs to occur. Perhaps, instead of the `update` function, `todo` was replaced with a library that efficiently implements immutable data structures. It does not matter. The point is that there is only one place where this change needs to occur. No other function knows what type of data is holding the properties of `todo`. It only knows to call the methods provided by `EmptyTodo` and the rest is taken care of.
+
+This is most apparent when you view the usage of the two implementations.
+
+#### Style 1, no encapsulation
+
+Every place that gets the text does this:
+
+```jsx
+<input value={todo.text} />
+```
+
+Every place in the code that sets the text does this:
+
+```jsx
+<input value={todo.text} onChange={(event) => { todo.text = event.target.value }} />
+```
+
+This means that when a change happens to the todo, you can see exactly how that change is being done. 
+
+Surprisingly, when reading the code, this can often, but not always, be easier to understand. You have all the information right in front of you. 
+
+However, as already discussed, this has the drawback of being harder to change. It has another drawback as well. Because all the information of how the change is done is replicated everywhere, it can be difficult to see what is being done. There may be many instructions that do not readily identify their purpose. These drawbacks are solved with encapsulation.
+
+#### Style 2, encapsulation
+
+Every place that gets the text does this:
+
+```jsx
+<input value={todo.getText()} />
+```
+
+Every place in the code that sets the text does this:
+
+```jsx
+<input value={todo.getText()} onChange={(event) => todo.setText(event.target.value)} />
+```
+
+In a trivial example such as a Todo application it is very hard to see why the difference matters. However, as the implementations become more complex the difference becomes striking. 
 
 ### Inheritance, composition, delegation
 
