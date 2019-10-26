@@ -261,7 +261,12 @@ This is a good start but it comes with probems. The properties of this plain obj
 > To use closure is to create a variable that is visible only to a parent function that returns a child function (or functions) that make use of that variable. The variable is safely hidden from all but the parent and child functions.
 
 ```javascript
-function EmptyTodo(todo = { completed: false, text: '' }) {
+function EmptyTodo() {
+  const todo = { 
+   completed: false, 
+   text: '' 
+  }
+  
   return {
     complete() {
      todo.completed = true
@@ -285,17 +290,17 @@ Here's an example. I mentioned that we could squabble over mutation of the `todo
 On the other hand, `EmptyTodo` encapsulates the data and the operations on `todo`. There is only one place that these operations occur. Here's how immutability might be accomplished when there is encapsulation.
 
 ```javascript
-function EmptyTodo(todo = { completed: false, text: '' }) {
- function update(key, value) {
-  return Object.assign({}, todo, { [key]: value })
+function Todo(todo = { completed: false, text: '' }) {
+ function immutableUpdate(key, value) {
+  return Todo(Object.assign({}, todo, { [key]: value }))
  }
  
  return {
    complete() {
-    return update('completed', true)
+    return immutableUpdate('completed', true)
    },
    setText(text) {
-    return update('text', text)
+    return immutableUpdate('text', text)
    },
    getText() {
     return todo.text
