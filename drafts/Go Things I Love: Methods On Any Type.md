@@ -4,6 +4,8 @@ Now that I am working with [Go](https://golang.org/) as my primary language at [
 I want to explore some of my favorite features of the language. I don't intend this to reveal previously unknown features or best 
 practices; I just want to share some of the reasons that I enjoy working with the language.
 
+![Go Things I Love](https://raw.githubusercontent.com/JustinDFuller/blog-posts/master/media/SOLID-single-responsibility-principle/go-things-i-love.png)
+
 ## Methods
 
 Typically a method is defined as a function that belongs to an object or class. This means you wouldn't necessarily add a method
@@ -138,7 +140,7 @@ if user.IsNotOldSchool() {
 
 Again, internally, the User struct will take advantage of the methods on the ID, further encapsulating the logic.
 
-You can play around with these examples on the [Go Playground](https://play.golang.org/p/heElweeXSky).
+You can play around with these examples on the [Go Playground](https://play.golang.org/p/2WlOg1byot1).
 
 ---
 
