@@ -36,8 +36,7 @@ Is the user's ID lower than the last oldschool player's ID? If so, they can acce
 
 Unfortunately, and right away, the community notices a bug. Specifically, a single user notices this bug. The last old school player is
 locked out of the game! The developers used the check `id < LastOldSchoolID` everywhere. So it works for all but the very last player.
-At this point the developers are forced to search for every instance of this check (forunately there aren't that many, only a dozen or so)
-and they replace the logic with `id <= LastOldSchoolID`. Everything is working perfectly again.
+At this point the developers are forced to search for every instance of this check (fortunately there aren't that many, only a dozen or so) and they replace the logic with `id <= LastOldSchoolID`. Everything is working perfectly again.
 
 Except it's not. The developer who coded logic for the old school login page included this snippet:
 
